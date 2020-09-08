@@ -1,7 +1,9 @@
 package red.man10.man10kitchengarden
 
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
@@ -85,7 +87,21 @@ class MultiBlock :Listener{
         armor.isVisible = false
         armor.setItem(EquipmentSlot.HEAD,item)
 
+        center.world.playSound(center,Sound.BLOCK_ANVIL_PLACE,1.0F,1.0F)
+
         return true
+    }
+
+    fun getMultiBlock(loc:Location):ItemStack?{
+
+        val stand = getArmorStand(loc)?:return null
+
+        val item = stand.getItem(EquipmentSlot.HEAD)
+
+        if (isMultiBlock(item))return item
+
+        return null
+
     }
 
     fun breakMultiBlock(location:Location):ItemStack?{
@@ -100,6 +116,8 @@ class MultiBlock :Listener{
 
         stand.remove()
 
+        location.world.playSound(location,Sound.BLOCK_STONE_BREAK,1.0F,1.0F)
+
         return item
     }
 
@@ -111,16 +129,62 @@ class MultiBlock :Listener{
     @EventHandler
     fun interactEvent(e:PlayerInteractEvent){
 
-        if (e.action != Action.RIGHT_CLICK_BLOCK)return
-
         val p = e.player
 
-        //バリアブロックをクリックした場合
-        if (e.clickedBlock!!.type == Material.BARRIER){
+        when(e.action){
 
+            Action.RIGHT_CLICK_BLOCK->{
+
+                //シフトしてない状態でバリアブロックをクリックした場合
+                if (e.clickedBlock!!.type == Material.BARRIER && !p.isSneaking){
+
+                    val item = getMultiBlock(e.clickedBlock!!.location)
+
+                    if (item!=null){
+                        Bukkit.getLogger().info("Clicked ${getData(item,"name")}")
+
+                        e.isCancelled = true
+                        return
+                    }
+                }else{
+
+                    val item = e.item?:return
+
+                    if (e.hasItem() && isMultiBlock(item)){
+
+                        val location = e.clickedBlock!!.location.clone()
+
+                        location.y +=2.0
+                        location.yaw = p.location.yaw
+
+                        setMultiBlock(location,item.clone())
+
+                        item.amount --
+
+                        e.isCancelled = true
+
+                        return
+                    }
+                    return
+                }
+            }
+
+            Action.LEFT_CLICK_BLOCK->{
+
+                if (p.isSneaking && e.clickedBlock!!.type == Material.BARRIER){
+
+                    val location = e.clickedBlock!!.location
+
+                    val item = breakMultiBlock(location)?:return
+
+                    p.inventory.addItem(item)
+
+                    e.isCancelled = true
+                }
+            }
+
+            else -> return
         }
-
-
     }
 
 }

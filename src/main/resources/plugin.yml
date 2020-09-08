@@ -2,3 +2,6 @@ name: Man10KitchenGarden
 version: 1.0
 main: red.man10.man10kitchengarden.Man10KitchenGarden
 api-version: 1.16
+commands:
+  mkg:
+    default: op
