@@ -6,6 +6,7 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -15,6 +16,8 @@ import org.bukkit.inventory.ItemStack
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.getData
 
 class MultiBlock :Listener{
+
+    val openLocation = HashMap<Player,Location>()
 
     fun getCube(centerBlock:Location):List<Location>{
 
@@ -57,7 +60,7 @@ class MultiBlock :Listener{
         val cube = getCube(center)
 
         cube.forEach { if (it.block.type != Material.AIR)return false }
-        cube.forEach { it.block.type = Material.AIR }
+        cube.forEach { it.block.type = Material.BARRIER }
 
         item.amount = 1
 
@@ -80,6 +83,7 @@ class MultiBlock :Listener{
 
         loc.x+=0.5
         loc.z+=0.5
+        loc.y -= 1
 
         val armor = center.world.spawn(loc,ArmorStand :: class.java)
         armor.setGravity(false)
@@ -112,7 +116,11 @@ class MultiBlock :Listener{
 
         if (!isMultiBlock(item))return null
 
-        getCube(stand.location.block.location).forEach { it.block.type = Material.AIR }
+        val center = stand.location.clone()
+
+        center.y ++
+
+        getCube(center).forEach { it.block.type = Material.AIR }
 
         stand.remove()
 
@@ -142,6 +150,8 @@ class MultiBlock :Listener{
 
                     if (item!=null){
                         Bukkit.getLogger().info("Clicked ${getData(item,"name")}")
+
+                        openLocation[p] = e.clickedBlock!!.location
 
                         e.isCancelled = true
                         return
