@@ -28,7 +28,7 @@ class Man10KitchenGarden : JavaPlugin() {
         lateinit var planter: Planter
         lateinit var inventory: Inventory
 
-        var planterID = 0
+        var planterID = 216
 
         fun setData(item:ItemStack,key:String,value:String){
             val meta = item.itemMeta
@@ -46,6 +46,16 @@ class Man10KitchenGarden : JavaPlugin() {
 
         if (sender !is Player)return false
 
+        if (!sender.hasPermission("man10garden.op"))return true
+
+        if (args.isEmpty()){
+
+            sender.sendMessage("§a/mkg planter ... ２種類のプランターを取得")
+            sender.sendMessage("§a/mkg recipe <name>  ... レシピを作るメニューを表示")
+
+            return true
+        }
+
         if (args[0] == "planter"){
 
             sender.inventory.addItem(planter.getPlanter())
@@ -56,6 +66,7 @@ class Man10KitchenGarden : JavaPlugin() {
 
         if (args[0] == "recipe"){
 
+                inventory.setRecipe(sender,args[1])
 
             return true
         }
@@ -76,7 +87,7 @@ class Man10KitchenGarden : JavaPlugin() {
         server.pluginManager.registerEvents(inventory,this)
 
         saveDefaultConfig()
-        planterID = config.getInt("planter")
+//        planterID = config.getInt("planter")
 
         recipe.load()
 

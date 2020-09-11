@@ -1,13 +1,17 @@
 package red.man10.man10kitchengarden
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.bukkit.inventory.ItemStack
+import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.plugin
 import java.util.concurrent.ConcurrentHashMap
+
 
 class Recipe {
 
     val recipes = ConcurrentHashMap<String,RecipeData>()
 
-    fun setRecipe(name:String,input:ItemStack,output:ItemStack,time:Int){
+    fun setRecipe(name:String,input:ItemStack,output:ItemStack){
 
         val recipe = RecipeData()
 
@@ -15,9 +19,19 @@ class Recipe {
         output.amount = 1
         recipe.input = input
         recipe.output = output
-//        recipe.time = time
 
         recipes[name] =  recipe
+
+        GlobalScope.launch {
+
+            plugin.reloadConfig()
+
+            plugin.config.set("$name.input", plugin.itemToBase64(input))
+            plugin.config.set("$name.output", plugin.itemToBase64(output))
+
+            plugin.saveConfig()
+
+        }
     }
 
     fun getRecipe(name:String):RecipeData?{
@@ -40,6 +54,18 @@ class Recipe {
 
     fun load(){
 
+        val keys = plugin.config.getKeys(false)
+
+        for (key in keys){
+
+            val recipe = RecipeData()
+
+            recipe.input = plugin.itemFromBase64(plugin.config.getString("$key.input")?:continue)?:continue
+            recipe.output = plugin.itemFromBase64(plugin.config.getString("$key.output")?:continue)?:continue
+
+            recipes[key] = recipe
+        }
+
     }
 
 
@@ -47,9 +73,6 @@ class Recipe {
 
         lateinit var input : ItemStack
         lateinit var output : ItemStack
-
-//        var time = 0//一つ作るのにかかる時間(min)
-
 
     }
 }

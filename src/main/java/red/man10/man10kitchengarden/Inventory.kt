@@ -8,9 +8,11 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemStack
+import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.getData
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.multiBlock
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planter
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.recipe
+import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.setData
 import java.text.SimpleDateFormat
 
 class Inventory:Listener{
@@ -66,10 +68,45 @@ class Inventory:Listener{
         p.openInventory(inv)
     }
 
+    fun setRecipe(p:Player,name:String){
+
+        val inv = Bukkit.createInventory(null,9,"SetRecipe")
+
+        val panel1 = ItemStack(Material.RED_STAINED_GLASS_PANE)
+
+        val meta1 = panel1.itemMeta
+        meta1.setDisplayName("§3§l←材料")
+        panel1.itemMeta = meta1
+
+        val panel2 = ItemStack(Material.RED_STAINED_GLASS_PANE)
+
+        val meta2 = panel2.itemMeta
+        meta2.setDisplayName("§3§l完成品→")
+        panel2.itemMeta = meta2
+
+        val panel3 = ItemStack(Material.LIME_STAINED_GLASS_PANE)
+        val meta3 = panel3.itemMeta
+        meta3.setDisplayName("§a§l閉じてセーブ")
+        panel3.itemMeta = meta3
+        setData(panel3,"name",name)
+
+
+        inv.setItem(1,panel1)
+        inv.setItem(2,panel1)
+        inv.setItem(3,panel1)
+        inv.setItem(4,panel3)
+        inv.setItem(5,panel2)
+        inv.setItem(6,panel2)
+        inv.setItem(7,panel2)
+
+        p.openInventory(inv)
+
+    }
+
     @EventHandler
     fun click(e:InventoryClickEvent){
 
-//        if (e.view.title != "§b改良型プランター" && e.view.title != "§aプランター") return
+        if (e.view.title != "§b改良型プランター" && e.view.title != "§aプランター") return
 
         val p = e.whoClicked
 
@@ -97,13 +134,29 @@ class Inventory:Listener{
 
             openPlanter(planterItem,p)
 
-        }
+            return
 
+        }
 
     }
 
     @EventHandler
     fun close(e:InventoryCloseEvent){
+
+        if (e.view.title == "SetRecipe"){
+
+            val inv = e.inventory
+
+            val input = inv.getItem(0)?:return
+            val output = inv.getItem(8)?:return
+
+            val name = getData(inv.getItem(4)!!,"name")!!
+
+            recipe.setRecipe(name,input,output)
+
+            e.player.sendMessage("§a§l設定完了！")
+            return
+        }
 
         multiBlock.openLocation.remove(e.player)
 
