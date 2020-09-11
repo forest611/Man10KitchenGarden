@@ -59,9 +59,8 @@ class Inventory:Listener{
 
                 meta2.setDisplayName("§a§l完成予想時刻:${SimpleDateFormat("MM/dd kk:mm").format(Man10KitchenGarden.planter.getFinishTime(planter,it))}")
                 panel2.itemMeta = meta2
-
-                inv.setItem(it-10,panel2)
             }
+            inv.setItem(it-9,panel2)
         }
 
         p.openInventory(inv)

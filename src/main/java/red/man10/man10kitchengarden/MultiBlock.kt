@@ -14,6 +14,8 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.getData
+import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.inventory
+import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planter
 
 class MultiBlock :Listener{
 
@@ -149,9 +151,11 @@ class MultiBlock :Listener{
                     val item = getMultiBlock(e.clickedBlock!!.location)
 
                     if (item!=null){
-                        Bukkit.getLogger().info("Clicked ${getData(item,"name")}")
+//                        Bukkit.getLogger().info("Clicked ${getData(item,"name")}")
 
                         openLocation[p] = e.clickedBlock!!.location
+
+                        inventory.openPlanter(item,p)
 
                         e.isCancelled = true
                         return
@@ -187,7 +191,7 @@ class MultiBlock :Listener{
 
                     val item = breakMultiBlock(location)?:return
 
-                    p.inventory.addItem(item)
+                    p.inventory.addItem(if (planter.isEx(item)){ planter.getPlanterEx() } else planter.getPlanter())
 
                     e.isCancelled = true
                 }
