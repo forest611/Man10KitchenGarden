@@ -19,7 +19,6 @@ import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planter
 
 class MultiBlock :Listener{
 
-    val openLocation = HashMap<Player,Location>()
 
     fun getCube(centerBlock:Location):List<Location>{
 
@@ -151,11 +150,8 @@ class MultiBlock :Listener{
                     val item = getMultiBlock(e.clickedBlock!!.location)
 
                     if (item!=null){
-//                        Bukkit.getLogger().info("Clicked ${getData(item,"name")}")
 
-                        openLocation[p] = e.clickedBlock!!.location
-
-                        inventory.openPlanter(item,p)
+                        inventory.openPlanter(item,p,e.clickedBlock!!.location)
 
                         e.isCancelled = true
                         return

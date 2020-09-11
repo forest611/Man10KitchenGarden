@@ -1,6 +1,7 @@
 package red.man10.man10kitchengarden
 
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -20,7 +21,7 @@ class Inventory:Listener{
     val slots = listOf(10,13,16,37,43)
     val waterSlot = 40
 
-    fun openPlanter(planter:ItemStack,p:Player){
+    fun openPlanter(planter:ItemStack,p:Player,l: Location){
 
         val isEX = Man10KitchenGarden.planter.isEx(planter)
 
@@ -42,6 +43,11 @@ class Inventory:Listener{
         val meta = barrier.itemMeta
         meta.setDisplayName("§c§l使用中")
         barrier.itemMeta = meta
+
+        val data = ItemStack(Material.GRAY_STAINED_GLASS_PANE)
+        setData(data,"location","${l.x};${l.y};${l.z}")
+
+        inv.setItem(0,data)
 
         slots.forEach {
 
@@ -123,7 +129,10 @@ class Inventory:Listener{
 
         if (recipe.getRecipe(input) !=null){
 
-            val planterItem = multiBlock.getMultiBlock(multiBlock.openLocation[p]?:return)
+            val pos = getData(e.inventory.getItem(0)!!,"location")!!.split(";")
+            val location = Location(p.world,pos[0].toDouble(),pos[1].toDouble(),pos[2].toDouble())
+
+            val planterItem = multiBlock.getMultiBlock(location)
 
             if (planterItem == null){
                 p.closeInventory()
@@ -132,7 +141,7 @@ class Inventory:Listener{
 
             if (!planter.set(planterItem,input,e.slot))e.isCancelled = true
 
-            openPlanter(planterItem,p)
+            openPlanter(planterItem,p,location)
 
             return
 
@@ -157,9 +166,6 @@ class Inventory:Listener{
             e.player.sendMessage("§a§l設定完了！")
             return
         }
-
-        multiBlock.openLocation.remove(e.player)
-
     }
 
 }
