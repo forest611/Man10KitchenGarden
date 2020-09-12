@@ -187,13 +187,23 @@ class MultiBlock :Listener{
 
             Action.LEFT_CLICK_BLOCK->{
 
-                if (p.isSneaking && e.clickedBlock!!.type == Material.BARRIER){
+                if (e.clickedBlock!!.type == Material.BARRIER){
+
+                    val wrench = p.inventory.itemInMainHand
+
+                    if (!wrench.hasItemMeta()||wrench.itemMeta.displayName != "§lレンチ" ){
+                        p.sendMessage("§c§lレンチを持ってください！")
+                        return
+                    }
 
                     val location = e.clickedBlock!!.location
 
                     val item = breakMultiBlock(location)?:return
 
-                    p.inventory.addItem(if (planter.isEx(item)){ planter.getPlanterEx() } else planter.getPlanter())
+
+                    if (planter.isEx(item)){
+                        p.inventory.addItem(planter.getPlanterEx())
+                    }
 
                     e.isCancelled = true
                 }

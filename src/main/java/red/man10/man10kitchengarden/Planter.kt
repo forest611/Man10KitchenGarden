@@ -31,7 +31,7 @@ class Planter {
         planter0.itemMeta = meta
 
         meta.setDisplayName("§aプランター")
-        meta.lore = mutableListOf("危険なハッパや、作物を育てる万能プランター")
+        meta.lore = mutableListOf("§f危険なハッパや、作物を育てる万能プランター","§f一度設置すると回収できない")
 
         planter0.itemMeta = meta
 
@@ -46,7 +46,7 @@ class Planter {
         planter0.itemMeta = meta
 
         meta.setDisplayName("§b改良型プランター")
-        meta.lore = mutableListOf("専用レンチで回収することができる改良型プランター","保持できる水の量も増えている")
+        meta.lore = mutableListOf("回収することができる改良型プランター","保持できる水の量も増えている")
 
         meta.addEnchant(Enchantment.LUCK,0,false)
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
