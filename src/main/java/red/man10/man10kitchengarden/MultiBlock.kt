@@ -44,7 +44,11 @@ class MultiBlock :Listener{
 
     fun getArmorStand(location: Location):ArmorStand?{
 
-        val entities = location.world.getNearbyEntities(location,1.5,1.5,1.5)
+        val fixedLoc = location.clone()
+        fixedLoc.x += 0.5
+        fixedLoc.z += 0.5
+
+        val entities = location.world.getNearbyEntities(fixedLoc,1.5,1.5,1.5)
 
         for (entity in entities){
             if (entity.type != EntityType.ARMOR_STAND)continue
@@ -147,11 +151,13 @@ class MultiBlock :Listener{
                 //シフトしてない状態でバリアブロックをクリックした場合
                 if (e.clickedBlock!!.type == Material.BARRIER && !p.isSneaking){
 
+                    if(e.hand != EquipmentSlot.HAND)return
+
                     val item = getMultiBlock(e.clickedBlock!!.location)
 
                     if (item!=null){
 
-                        inventory.openPlanter(item,p,e.clickedBlock!!.location)
+                        inventory.openPlanter(item,p,e.clickedBlock!!.location,null)
 
                         e.isCancelled = true
                         return

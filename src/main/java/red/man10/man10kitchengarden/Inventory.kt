@@ -8,6 +8,8 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.getData
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.multiBlock
@@ -21,15 +23,17 @@ class Inventory:Listener{
     val slots = listOf(10,13,16,37,43)
     val waterSlot = 40
 
-    fun openPlanter(planter:ItemStack,p:Player,l: Location){
+    fun openPlanter(planter:ItemStack,p:Player,l: Location,inventory: Inventory?){
 
         val isEX = Man10KitchenGarden.planter.isEx(planter)
 
-        val inv = if (isEX){
-            Bukkit.createInventory(null,54,"§b改良型プランター")
-        }else{
-            Bukkit.createInventory(null,54,"§aプランター")
-        }
+        val inv = inventory
+                ?: if(isEX){
+                    Bukkit.createInventory(null,54,"§b改良型プランター")
+                }else{
+                    Bukkit.createInventory(null,54,"§aプランター")
+                }
+
 
         val panel1 = ItemStack(Material.GRAY_STAINED_GLASS_PANE)
 
@@ -49,26 +53,31 @@ class Inventory:Listener{
 
         inv.setItem(0,data)
 
-        slots.forEach {
-
+        for (slot in slots){
             val panel2 = ItemStack(Material.LIME_STAINED_GLASS_PANE)
             val meta2 = panel2.itemMeta
 
-            if (Man10KitchenGarden.planter.isUsed(planter,it)){
+            if (Man10KitchenGarden.planter.isUsed(planter,slot)){
 
-                val output = Man10KitchenGarden.planter.isFinish(planter,it)
+                val output = Man10KitchenGarden.planter.isFinish(planter,slot)
 
                 if (output !=null){
-                    inv.setItem(it,output)
-                    return@forEach
+                    inv.setItem(slot,output)
+                    continue
                 }
 
-                inv.setItem(it,barrier)
+                inv.setItem(slot,barrier)
 
-                meta2.setDisplayName("§a§l完成予想時刻:${SimpleDateFormat("MM/dd kk:mm").format(Man10KitchenGarden.planter.getFinishTime(planter,it))}")
+                meta2.setDisplayName("§a§l完成予想時刻:${SimpleDateFormat("MM/dd kk:mm").format(Man10KitchenGarden.planter.getFinishTime(planter,slot))}")
                 panel2.itemMeta = meta2
+                inv.setItem(slot-9,panel2)
+                continue
             }
-            inv.setItem(it-9,panel2)
+            meta2.setDisplayName("§a§l植える")
+            panel2.itemMeta = meta2
+
+            inv.setItem(slot-9,panel2)
+
         }
 
         p.openInventory(inv)
@@ -120,32 +129,37 @@ class Inventory:Listener{
 
         if (e.clickedInventory == p.inventory)return
 
-        if (!slots.contains(e.slot)){
+        if (slots.contains(e.slot))return
+
+        if (!slots.contains(e.slot+9)) {
             e.isCancelled = true
             return
         }
 
-        val input = e.cursor?:return
+        val inv = e.inventory
 
-        if (recipe.getRecipe(input) !=null){
+        e.isCancelled = true
 
-            val pos = getData(e.inventory.getItem(0)!!,"location")!!.split(";")
-            val location = Location(p.world,pos[0].toDouble(),pos[1].toDouble(),pos[2].toDouble())
+        val input = inv.getItem(e.slot+9)?:return
 
-            val planterItem = multiBlock.getMultiBlock(location)
+        if (recipe.getRecipe(input) ==null)return
 
-            if (planterItem == null){
-                p.closeInventory()
-                return
-            }
+        //アマスタのロケーションを読み込み
+        val pos = getData(e.inventory.getItem(0)!!,"location")!!.split(";")
+        val location = Location(p.world,pos[0].toDouble(),pos[1].toDouble(),pos[2].toDouble())
 
-            if (!planter.set(planterItem,input,e.slot))e.isCancelled = true
+        val planterItem = multiBlock.getMultiBlock(location)
 
-            openPlanter(planterItem,p,location)
-
+        if (planterItem == null){
+            p.closeInventory()
             return
-
         }
+
+        planter.set(planterItem,input.clone(),e.slot+9)
+
+        openPlanter(planterItem,p,location,inv)
+
+        return
 
     }
 

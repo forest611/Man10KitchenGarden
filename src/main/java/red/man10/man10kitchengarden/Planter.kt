@@ -91,7 +91,7 @@ class Planter {
 
         if (time.toLong()>Date().time)return null
 
-        val output = plugin.itemFromBase64(getString(planter,"$slot.recipe")!!)?:return null
+        val output = plugin.itemFromBase64(getString(planter,"$slot.output")!!)?:return null
 
         delete(planter,"$slot.output")
         delete(planter,"$slot.time")
