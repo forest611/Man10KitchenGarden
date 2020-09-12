@@ -1,13 +1,10 @@
 package red.man10.man10kitchengarden
 
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.enchantments.Enchantment
-import org.bukkit.event.inventory.InventoryType
-import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType.*
+import red.man10.man10kitchengarden.Inventory.Companion.slots
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planterID
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.plugin
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.recipe
@@ -15,47 +12,47 @@ import java.util.*
 
 class Planter {
 
-
-    val planter0 : ItemStack = ItemStack(Material.IRON_NUGGET)
+    val planterItem : ItemStack = ItemStack(Material.IRON_NUGGET)
+    val air = ItemStack(Material.AIR)
 
     init {
 
-        val meta = planter0.itemMeta
+        val meta = planterItem.itemMeta
         meta.setCustomModelData(planterID)
-        planter0.itemMeta = meta
+        planterItem.itemMeta = meta
     }
 
     fun getPlanter():ItemStack{
-        val meta = planter0.itemMeta
+        val meta = planterItem.itemMeta
         meta.setCustomModelData(planterID)
-        planter0.itemMeta = meta
+        planterItem.itemMeta = meta
 
         meta.setDisplayName("§aプランター")
         meta.lore = mutableListOf("§f危険なハッパや、作物を育てる万能プランター","§f一度設置すると回収できない")
 
-        planter0.itemMeta = meta
+        planterItem.itemMeta = meta
 
-        setString(planter0,"name","planter")
+        setString(planterItem,"name","planter")
 
-        return planter0
+        return planterItem
     }
 
     fun getPlanterEx():ItemStack{
-        val meta = planter0.itemMeta
+        val meta = planterItem.itemMeta
         meta.setCustomModelData(planterID)
-        planter0.itemMeta = meta
+        planterItem.itemMeta = meta
 
         meta.setDisplayName("§b改良型プランター")
-        meta.lore = mutableListOf("回収することができる改良型プランター","保持できる水の量も増えている")
+        meta.lore = mutableListOf("§f回収することができる改良型プランター","§f肥料などが使えるようになってる")
 
-        meta.addEnchant(Enchantment.LUCK,0,false)
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+//        meta.addEnchant(Enchantment.LUCK,1,false)
+//        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
 
-        planter0.itemMeta = meta
+        planterItem.itemMeta = meta
 
-        setString(planter0,"name","planterEX")
+        setString(planterItem,"name","planterEX")
 
-        return planter0
+        return planterItem
     }
 
     fun isUsed(planter: ItemStack,slot: Int):Boolean{
@@ -73,101 +70,76 @@ class Planter {
         val name = recipe.getRecipe(input)?:return false
 
         val time = Calendar.getInstance()
-        time.add(Calendar.HOUR_OF_DAY,3)
+//        time.add(Calendar.HOUR_OF_DAY,3)
+        time.add(Calendar.MINUTE,1)
 
         val output = recipe.getRecipe(name)!!.output.clone()
 
         output.amount = input.amount
 
         setString(planter,"$slot.output", plugin.itemToBase64(output))
-        setString(planter,"$slot.time",time.time.time.toString())
+        setLong(planter,"$slot.time",time.time.time)
 
         return true
     }
 
     fun isFinish(planter: ItemStack,slot: Int):ItemStack?{
 
-        val time = getString(planter,"$slot.time")?:return null
+        val time = getLong(planter,"$slot.time")
 
-        if (time.toLong()>Date().time)return null
+        if (time>Date().time)return null
+        if (time>getLong(planter,"water"))return air
 
         val output = plugin.itemFromBase64(getString(planter,"$slot.output")!!)?:return null
 
         delete(planter,"$slot.output")
         delete(planter,"$slot.time")
+        delete(planter,"$slot.fertilizer")
 
         return output
 
     }
 
     fun getFinishTime(planter: ItemStack,slot: Int): Long {
+        return getLong(planter,"$slot.time")
+    }
 
-        return getString(planter,"$slot.time")!!.toLong()
+    fun setFertilizer(planter: ItemStack,time:Int){
+
+        for (slot in slots){
+
+            //既に使ってたら使えない
+            if (getString(planter,"$slot.fertilizer")!=null)continue
+
+            val date = Date()
+            date.time = getLong(planter,"$slot.time")
+            if (time == 0)continue
+
+            val calender = Calendar.getInstance()
+            calender.time =date
+            calender.add(Calendar.MINUTE,30 )
+            setString(planter,"$slot.fertilizer","used")
+
+        }
 
     }
 
+    //水を入れる
+    fun setWater(planter:ItemStack){
 
+        val time = Calendar.getInstance()
+//        time.add(Calendar.HOUR_OF_DAY,6)
+        time.add(Calendar.MINUTE,5)
 
+        setLong(planter,"water",time.time.time)
+    }
 
-//    fun add(input: ItemStack,planter: ItemStack):Boolean{
-//        val name = recipe.getRecipe(input)?:return false
-//
-//        if ((getString(planter,"recipe")?:return false) !=name)return false
-//
-//        var amount = getInt(planter,"amount")
-//
-//        if (amount>=64)return false
-//
-//        if (!useWater(planter))return false
-//
-//        amount ++
-//
-//        setInt(planter,"amount", amount)
-//        setString(planter,"recipe",name)
-//
-//        return true
-//    }
-//
-//    fun take(planter: ItemStack):ItemStack?{
-//
-//        val meta = planter.itemMeta
-//        val now = meta.persistentDataContainer[NamespacedKey(plugin,"amount"), INTEGER]?:0
-//
-//        if (now == 0){
-//            return null
-//        }
-//
-//        meta.persistentDataContainer.set(NamespacedKey(plugin,"amount"), INTEGER,(now - 1))
-//
-//        return recipe.getRecipe(meta.persistentDataContainer[NamespacedKey(plugin,"recipe"), STRING]!!)!!.output
-//    }
-//
-//    //6時間でなくなる(麻薬一つ2時間で作る) test
-//    fun addWater(planter: ItemStack):Boolean{
-//        var water = getInt(planter,"water")
-//
-//        if (water >= 3){
-//            return false
-//        }
-//        water += 3
-//
-//        setInt(planter,"water",water)
-//        return true
-//    }
-//
-//    fun useWater(planter: ItemStack):Boolean{
-//        var water = getInt(planter,"water")
-//
-//        if (water <1)return false
-//
-//        water --
-//
-//        setInt(planter,"water",water)
-//        return true
-//    }
-
-
-
+    //水分があるか
+    fun isWater(planter: ItemStack):Boolean{
+        val time = getLong(planter,"water")
+        if (time<Date().time)return false
+        return true
+    }
 
     ///////////////////////////////////////////////////////////////////
 
@@ -182,15 +154,15 @@ class Planter {
         return item.itemMeta.persistentDataContainer[NamespacedKey(plugin, key), STRING]?:return null
     }
 
-    fun setInt(item:ItemStack,key:String,value:Int){
+    fun setLong(item:ItemStack,key:String,value:Long){
         val meta = item.itemMeta
-        meta.persistentDataContainer.set(NamespacedKey(plugin, key), INTEGER,value)
+        meta.persistentDataContainer.set(NamespacedKey(plugin, key), LONG,value)
         item.itemMeta = meta
     }
 
-    fun getInt(item: ItemStack,key: String):Int{
+    fun getLong(item: ItemStack,key: String):Long{
         if (!item.hasItemMeta())return 0
-        return item.itemMeta.persistentDataContainer[NamespacedKey(plugin, key), INTEGER]?:0
+        return item.itemMeta.persistentDataContainer[NamespacedKey(plugin, key), LONG]?:0
     }
 
     fun delete(item:ItemStack,key: String){

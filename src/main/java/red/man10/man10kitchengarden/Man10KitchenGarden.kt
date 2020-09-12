@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.io.BukkitObjectInputStream
 import org.bukkit.util.io.BukkitObjectOutputStream
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
+import red.man10.realestate.RealEstateAPI
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
@@ -27,6 +28,8 @@ class Man10KitchenGarden : JavaPlugin() {
 
         lateinit var planter: Planter
         lateinit var inventory: Inventory
+
+        lateinit var realEstateAPI: RealEstateAPI
 
         var planterID = 216
 
@@ -82,6 +85,7 @@ class Man10KitchenGarden : JavaPlugin() {
         recipe = Recipe()
         planter = Planter()
         inventory = Inventory()
+        realEstateAPI = RealEstateAPI()
 
         server.pluginManager.registerEvents(multiBlock,this)
         server.pluginManager.registerEvents(inventory,this)

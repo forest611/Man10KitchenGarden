@@ -1,12 +1,10 @@
 package red.man10.man10kitchengarden
 
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -16,6 +14,8 @@ import org.bukkit.inventory.ItemStack
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.getData
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.inventory
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planter
+import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.realEstateAPI
+import red.man10.realestate.region.User
 
 class MultiBlock :Listener{
 
@@ -144,14 +144,18 @@ class MultiBlock :Listener{
 
         val p = e.player
 
+        if (p.world.name != "builder")return
+
         when(e.action){
 
             Action.RIGHT_CLICK_BLOCK->{
 
-                //シフトしてない状態でバリアブロックをクリックした場合
+                //バリアブロックをクリックした場合
                 if (e.clickedBlock!!.type == Material.BARRIER && !p.isSneaking){
 
                     if(e.hand != EquipmentSlot.HAND)return
+
+                    if (!realEstateAPI.hasPermission(p,e.clickedBlock!!.location,User.Companion.Permission.INVENTORY))return
 
                     val item = getMultiBlock(e.clickedBlock!!.location)
 
@@ -169,6 +173,8 @@ class MultiBlock :Listener{
                     if (e.hasItem() && isMultiBlock(item)){
 
                         val location = e.clickedBlock!!.location.clone()
+
+                        if (!realEstateAPI.hasPermission(p,location,User.Companion.Permission.ALL))return
 
                         location.y +=2.0
                         location.yaw = p.location.yaw
@@ -189,14 +195,16 @@ class MultiBlock :Listener{
 
                 if (e.clickedBlock!!.type == Material.BARRIER){
 
+                    val location = e.clickedBlock!!.location
+
+                    if (!realEstateAPI.hasPermission(p,location,User.Companion.Permission.ALL))return
+
                     val wrench = p.inventory.itemInMainHand
 
                     if (!wrench.hasItemMeta()||wrench.itemMeta.displayName != "§lレンチ" ){
                         p.sendMessage("§c§lレンチを持ってください！")
                         return
                     }
-
-                    val location = e.clickedBlock!!.location
 
                     val item = breakMultiBlock(location)?:return
 

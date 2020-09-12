@@ -3,6 +3,7 @@ package red.man10.man10kitchengarden
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -11,21 +12,35 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.getData
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.multiBlock
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planter
+import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.plugin
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.recipe
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.setData
 import java.text.SimpleDateFormat
 
 class Inventory:Listener{
 
-    val slots = listOf(10,13,16,37,43)
+    companion object{
+        val slots = listOf(10,13,16,37,43)
+    }
     val waterSlot = 40
+
+    val barrier = ItemStack(Material.BARRIER)
+
+    init {
+        val meta = barrier.itemMeta
+        meta.setDisplayName("§c§l使用中")
+        barrier.itemMeta = meta
+    }
 
     fun openPlanter(planter:ItemStack,p:Player,l: Location,inventory: Inventory?){
 
         val isEX = Man10KitchenGarden.planter.isEx(planter)
+
+        val isWater = Man10KitchenGarden.planter.isWater(planter)
 
         val inv = inventory
                 ?: if(isEX){
@@ -43,15 +58,17 @@ class Inventory:Listener{
             inv.setItem(i,panel1)
         }
 
-        val barrier = ItemStack(Material.BARRIER)
-        val meta = barrier.itemMeta
-        meta.setDisplayName("§c§l使用中")
-        barrier.itemMeta = meta
-
         val data = ItemStack(Material.GRAY_STAINED_GLASS_PANE)
         setData(data,"location","${l.x};${l.y};${l.z}")
 
         inv.setItem(0,data)
+
+        val waterPanel = ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
+        val wMeta = waterPanel.itemMeta
+        wMeta.setDisplayName("§b水:${if (isWater)"§bあり" else "§cなし" }")
+        waterPanel.itemMeta = wMeta
+
+        inv.setItem(waterSlot-9,waterPanel)
 
         for (slot in slots){
             val panel2 = ItemStack(Material.LIME_STAINED_GLASS_PANE)
@@ -63,6 +80,11 @@ class Inventory:Listener{
 
                 if (output !=null){
                     inv.setItem(slot,output)
+
+                    meta2.setDisplayName("§a§l植える")
+                    panel2.itemMeta = meta2
+
+                    inv.setItem(slot-9,panel2)
                     continue
                 }
 
@@ -80,7 +102,9 @@ class Inventory:Listener{
 
         }
 
-        p.openInventory(inv)
+        if (inventory==null){
+            p.openInventory(inv)
+        }
     }
 
     fun setRecipe(p:Player,name:String){
@@ -129,20 +153,7 @@ class Inventory:Listener{
 
         if (e.clickedInventory == p.inventory)return
 
-        if (slots.contains(e.slot))return
-
-        if (!slots.contains(e.slot+9)) {
-            e.isCancelled = true
-            return
-        }
-
-        val inv = e.inventory
-
-        e.isCancelled = true
-
-        val input = inv.getItem(e.slot+9)?:return
-
-        if (recipe.getRecipe(input) ==null)return
+        if (slots.contains(e.slot) || e.slot == waterSlot)return
 
         //アマスタのロケーションを読み込み
         val pos = getData(e.inventory.getItem(0)!!,"location")!!.split(";")
@@ -150,10 +161,30 @@ class Inventory:Listener{
 
         val planterItem = multiBlock.getMultiBlock(location)
 
+        val inv = e.inventory
+
+        e.isCancelled = true
+
         if (planterItem == null){
             p.closeInventory()
             return
         }
+
+        if (e.slot == (waterSlot-9)){
+            val slot40 = inv.getItem(waterSlot)?:return
+            if (slot40.type == Material.WATER_BUCKET){
+                planter.setWater(planterItem)
+                inv.removeItem(slot40)
+                openPlanter(planterItem,p,location,inv)
+            }
+            return
+        }
+
+        if (!slots.contains(e.slot+9)) { return }
+
+        val input = inv.getItem(e.slot+9)?:return
+
+        if (recipe.getRecipe(input) ==null)return
 
         planter.set(planterItem,input.clone(),e.slot+9)
 
