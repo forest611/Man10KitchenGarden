@@ -3,6 +3,8 @@ package red.man10.man10kitchengarden
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
+import org.bukkit.block.Block
+import org.bukkit.block.BlockFace
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -178,6 +180,10 @@ class MultiBlock :Listener{
 
                     val item = e.item?:return
 
+                    val clicked = e.clickedBlock?:return
+//                    if (clicked.getFace(clicked) != BlockFace.UP)return
+                    if (e.blockFace != BlockFace.UP)return
+//
                     if (e.hasItem() && isMultiBlock(item)){
 
                         val location = e.clickedBlock!!.location.clone()

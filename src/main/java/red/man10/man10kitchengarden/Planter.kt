@@ -70,8 +70,8 @@ class Planter {
         val name = recipe.getRecipe(input)?:return false
 
         val time = Calendar.getInstance()
-//        time.add(Calendar.HOUR_OF_DAY,3)
-        time.add(Calendar.MINUTE,1)
+        time.add(Calendar.HOUR_OF_DAY,3)
+//        time.add(Calendar.MINUTE,1)
 
         val output = recipe.getRecipe(name)!!.output.clone()
 
@@ -134,8 +134,8 @@ class Planter {
     fun setWater(planter:ItemStack){
 
         val time = Calendar.getInstance()
-//        time.add(Calendar.HOUR_OF_DAY,6)
-        time.add(Calendar.MINUTE,5)
+        time.add(Calendar.HOUR_OF_DAY,6)
+//        time.add(Calendar.MINUTE,5)
 
         setLong(planter,"water",time.time.time)
     }
