@@ -5,6 +5,7 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -16,6 +17,8 @@ import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.inventory
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planter
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.realEstateAPI
 import red.man10.realestate.region.User
+import red.man10.realestate.region.User.Companion.Permission.ALL
+import red.man10.realestate.region.User.Companion.Permission.INVENTORY
 
 class MultiBlock :Listener{
 
@@ -60,11 +63,14 @@ class MultiBlock :Listener{
 
     }
 
-    fun setMultiBlock(center:Location, item:ItemStack):Boolean{
+    fun setMultiBlock(center:Location, item:ItemStack,p: Player):Boolean{
 
         val cube = getCube(center)
 
-        cube.forEach { if (it.block.type != Material.AIR)return false }
+        cube.forEach {
+            //if (!realEstateAPI.hasPermission(p,it,User.Companion.Permission.ALL))return false
+            if (it.block.type != Material.AIR)return false
+        }
         cube.forEach { it.block.type = Material.BARRIER }
 
         item.amount = 1
@@ -155,13 +161,15 @@ class MultiBlock :Listener{
 
                     if(e.hand != EquipmentSlot.HAND)return
 
-                    if (!realEstateAPI.hasPermission(p,e.clickedBlock!!.location,User.Companion.Permission.INVENTORY))return
+                    val clickedLocation = e.clickedBlock!!.location.clone()
 
-                    val item = getMultiBlock(e.clickedBlock!!.location)
+                    if (!realEstateAPI.hasPermission(p,clickedLocation, INVENTORY))return
+
+                    val item = getMultiBlock(clickedLocation)
 
                     if (item!=null){
 
-                        inventory.openPlanter(item,p,e.clickedBlock!!.location,null)
+                        inventory.openPlanter(item,p,clickedLocation,null)
 
                         e.isCancelled = true
                         return
@@ -174,15 +182,14 @@ class MultiBlock :Listener{
 
                         val location = e.clickedBlock!!.location.clone()
 
-                        if (!realEstateAPI.hasPermission(p,location,User.Companion.Permission.ALL))return
+                        if (!realEstateAPI.hasPermission(p,location, ALL))return
 
                         location.y +=2.0
                         location.yaw = p.location.yaw
 
-                        setMultiBlock(location,item.clone())
-
-                        item.amount --
-
+                        if (setMultiBlock(location,item.clone(),p)){
+                            item.amount --
+                        }
                         e.isCancelled = true
 
                         return
@@ -197,7 +204,7 @@ class MultiBlock :Listener{
 
                     val location = e.clickedBlock!!.location
 
-                    if (!realEstateAPI.hasPermission(p,location,User.Companion.Permission.ALL))return
+                    if (!realEstateAPI.hasPermission(p,location, ALL))return
 
                     val wrench = p.inventory.itemInMainHand
 
@@ -207,7 +214,6 @@ class MultiBlock :Listener{
                     }
 
                     val item = breakMultiBlock(location)?:return
-
 
                     if (planter.isEx(item)){
                         p.inventory.addItem(planter.getPlanterEx())

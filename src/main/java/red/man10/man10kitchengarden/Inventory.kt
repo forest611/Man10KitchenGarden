@@ -23,17 +23,17 @@ import java.text.SimpleDateFormat
 
 class Inventory:Listener{
 
-    companion object{
-        val slots = listOf(10,13,16,37,43)
-    }
     val waterSlot = 40
-
     val barrier = ItemStack(Material.BARRIER)
 
     init {
         val meta = barrier.itemMeta
         meta.setDisplayName("§c§l使用中")
         barrier.itemMeta = meta
+    }
+
+    companion object{
+        val slots = listOf(10,13,16,37,43)
     }
 
     fun openPlanter(planter:ItemStack,p:Player,l: Location,inventory: Inventory?){
@@ -44,9 +44,9 @@ class Inventory:Listener{
 
         val inv = inventory
                 ?: if(isEX){
-                    Bukkit.createInventory(null,54,"§b改良型プランター")
+                    Bukkit.createInventory(p,54,"§b改良型プランター")
                 }else{
-                    Bukkit.createInventory(null,54,"§aプランター")
+                    Bukkit.createInventory(p,54,"§aプランター")
                 }
 
 
@@ -153,7 +153,13 @@ class Inventory:Listener{
 
         if (e.clickedInventory == p.inventory)return
 
-        if (slots.contains(e.slot) || e.slot == waterSlot)return
+        if (slots.contains(e.slot) || e.slot == waterSlot){
+            val item = e.currentItem?:return
+            if ((item.hasItemMeta()&&item.itemMeta.displayName == "§c§l使用中")){
+                e.isCancelled = true
+            }
+            return
+        }
 
         //アマスタのロケーションを読み込み
         val pos = getData(e.inventory.getItem(0)!!,"location")!!.split(";")
