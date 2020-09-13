@@ -88,7 +88,13 @@ class Planter {
         val time = getLong(planter,"$slot.time")
 
         if (time>Date().time)return null
-        if (time>getLong(planter,"water"))return air
+        if (time>getLong(planter,"water")){
+            delete(planter,"$slot.output")
+            delete(planter,"$slot.time")
+            delete(planter,"$slot.fertilizer")
+
+            return air
+        }
 
         val output = plugin.itemFromBase64(getString(planter,"$slot.output")!!)?:return null
 
