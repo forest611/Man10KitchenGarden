@@ -3,7 +3,6 @@ package red.man10.man10kitchengarden
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
-import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
@@ -17,10 +16,10 @@ import org.bukkit.inventory.ItemStack
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.getData
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.inventory
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planter
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.realEstateAPI
+import red.man10.realestate.RealEstateAPI
 import red.man10.realestate.region.User
-import red.man10.realestate.region.User.Companion.Permission.ALL
-import red.man10.realestate.region.User.Companion.Permission.INVENTORY
+import red.man10.realestate.region.User.Permission.ALL
+import red.man10.realestate.region.User.Permission.INVENTORY
 
 class MultiBlock :Listener{
 
@@ -65,7 +64,7 @@ class MultiBlock :Listener{
 
     }
 
-    fun setMultiBlock(center:Location, item:ItemStack,p: Player):Boolean{
+    fun setMultiBlock(center:Location, item:ItemStack):Boolean{
 
         val cube = getCube(center)
 
@@ -165,7 +164,7 @@ class MultiBlock :Listener{
 
                     val clickedLocation = e.clickedBlock!!.location.clone()
 
-                    if (!realEstateAPI.hasPermission(p,clickedLocation, INVENTORY))return
+                    if (!RealEstateAPI.hasPermission(p,clickedLocation, INVENTORY))return
 
                     val item = getMultiBlock(clickedLocation)
 
@@ -181,19 +180,19 @@ class MultiBlock :Listener{
                     val item = e.item?:return
 
                     val clicked = e.clickedBlock?:return
-//                    if (clicked.getFace(clicked) != BlockFace.UP)return
+
                     if (e.blockFace != BlockFace.UP)return
-//
+
                     if (e.hasItem() && isMultiBlock(item)){
 
-                        val location = e.clickedBlock!!.location.clone()
+                        val location = clicked.location.clone()
 
-                        if (!realEstateAPI.hasPermission(p,location, ALL))return
+                        if (!RealEstateAPI.hasPermission(p,location, ALL))return
 
                         location.y +=2.0
                         location.yaw = p.location.yaw
 
-                        if (setMultiBlock(location,item.clone(),p)){
+                        if (setMultiBlock(location,item.clone())){
                             item.amount --
                         }
                         e.isCancelled = true
@@ -210,7 +209,7 @@ class MultiBlock :Listener{
 
                     val location = e.clickedBlock!!.location
 
-                    if (!realEstateAPI.hasPermission(p,location, ALL))return
+                    if (!RealEstateAPI.hasPermission(p,location, ALL))return
 
                     val wrench = p.inventory.itemInMainHand
 

@@ -29,8 +29,6 @@ class Man10KitchenGarden : JavaPlugin() {
         lateinit var planter: Planter
         lateinit var inventory: Inventory
 
-        lateinit var realEstateAPI: RealEstateAPI
-
         var planterID = 216
 
         fun setData(item:ItemStack,key:String,value:String){
@@ -85,7 +83,6 @@ class Man10KitchenGarden : JavaPlugin() {
         recipe = Recipe()
         planter = Planter()
         inventory = Inventory()
-        realEstateAPI = RealEstateAPI()
 
         server.pluginManager.registerEvents(multiBlock,this)
         server.pluginManager.registerEvents(inventory,this)

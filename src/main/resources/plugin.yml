@@ -1,5 +1,9 @@
 name: Man10KitchenGarden
 version: 1.0
+softdepend:
+  - Man10CommonLibs
+deoend:
+  - Man10RealEstate
 main: red.man10.man10kitchengarden.Man10KitchenGarden
 api-version: 1.16
 commands:
