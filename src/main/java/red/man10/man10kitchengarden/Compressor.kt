@@ -6,7 +6,7 @@ import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.titles
 
 object Compressor : MultiItem(){
 
-    private const val id = 210
+    private const val id = 214
     const val compressorName = "§6圧縮機"
     val compressorItem = ItemStack(Material.IRON_NUGGET)
 
