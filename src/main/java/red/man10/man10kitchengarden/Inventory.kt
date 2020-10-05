@@ -53,6 +53,8 @@ object Inventory:Listener{
     }
 
     fun openPlanter(planter:ItemStack,p:Player,l: Location){
+//
+//        Planter.status(planter,p)
 
         val isEX = Planter.isEx(planter)
 
@@ -101,6 +103,9 @@ object Inventory:Listener{
     }
 
     fun openCompressor(compressor:ItemStack,p:Player,l:Location){
+//
+//        Compressor.status(compressor,p)
+//
         val inv = createBaseMenu(Compressor.compressorName,p,l)
 
         val fuelPanel = ItemStack(Material.ORANGE_STAINED_GLASS_PANE)

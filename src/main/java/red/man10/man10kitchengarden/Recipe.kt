@@ -42,17 +42,13 @@ class Recipe(private val itemName:String) {
 
     fun getRecipe(input:ItemStack):String?{
 
-//        val clone = input.clone()
-//        clone.amount = 1
-//
-//        for (recipe in recipes){
-//            if (recipe.value.input.isSimilar(input)){
-//                return recipe.key
-//            }
-//        }
+        for (recipe in recipes){
+            if (recipe.value.input.isSimilar(input)){
+                return recipe.key
+            }
+        }
 
-
-        return recipes.filter { it.value.input.isSimilar(input) }.keys.toString()
+        return null
     }
 
     fun load(){
