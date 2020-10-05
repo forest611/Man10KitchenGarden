@@ -1,12 +1,9 @@
 package red.man10.man10kitchengarden
 
-import org.bukkit.NamespacedKey
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-
-import org.bukkit.persistence.PersistentDataType.STRING
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.io.BukkitObjectInputStream
 import org.bukkit.util.io.BukkitObjectOutputStream
@@ -19,6 +16,7 @@ class Man10KitchenGarden : JavaPlugin() {
     companion object{
 
         lateinit var plugin: Man10KitchenGarden
+        val titles = mutableListOf<String>()
 
     }
 
