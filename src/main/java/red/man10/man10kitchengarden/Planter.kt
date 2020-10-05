@@ -2,6 +2,7 @@ package red.man10.man10kitchengarden
 
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
+import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planterRecipe
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.titles
 
 object Planter :MultiItem(){
@@ -57,4 +58,18 @@ object Planter :MultiItem(){
         if(getString(planter,"name") == "planterEX")return true
         return false
     }
+
+    fun setRecipe(item: ItemStack, input: ItemStack, slot:Int):Boolean{
+
+        val name = planterRecipe.getRecipe(input)?:return false
+
+        val output = planterRecipe.getRecipe(name)!!.output.clone()
+
+        output.amount = input.amount
+
+        super.set(item, output, slot)
+
+        return true
+    }
+
 }

@@ -8,7 +8,7 @@ object Compressor : MultiItem(){
 
     private const val id = 210
     const val compressorName = "§6圧縮機"
-    private val compressorItem = ItemStack(Material.IRON_NUGGET)
+    val compressorItem = ItemStack(Material.IRON_NUGGET)
 
     init {
         val meta = compressorItem.itemMeta
@@ -24,6 +24,17 @@ object Compressor : MultiItem(){
         titles.add(compressorName)
     }
 
+    fun setRecipe(item: ItemStack, input: ItemStack, slot:Int):Boolean{
 
+        val name = Man10KitchenGarden.compressorRecipe.getRecipe(input)?:return false
+
+        val output = Man10KitchenGarden.compressorRecipe.getRecipe(name)!!.output.clone()
+
+        output.amount = input.amount
+
+        super.set(item, output, slot)
+
+        return true
+    }
 
 }

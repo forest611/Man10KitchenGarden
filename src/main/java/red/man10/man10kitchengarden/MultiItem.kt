@@ -9,8 +9,8 @@ import java.util.*
 open class MultiItem{
 
     private val air = ItemStack(Material.AIR)
-    private val output = "output"
-    private val time = "time"
+    val output = "output"
+    val time = "time"
     private val fertilizer = "fertilizer"
     private val fuel = "fuel"
 
@@ -22,25 +22,6 @@ open class MultiItem{
         return true
     }
 
-
-
-    fun set(item: ItemStack, input: ItemStack, slot:Int):Boolean{
-
-        val name = Recipe.getRecipe(input)?:return false
-
-        val time = Calendar.getInstance()
-        time.add(Calendar.HOUR_OF_DAY,3)
-//        time.add(Calendar.MINUTE,1)
-
-        val output = Recipe.getRecipe(name)!!.output.clone()
-
-        output.amount = input.amount
-
-        setString(item,"$slot.${this.output}", Man10KitchenGarden.plugin.itemToBase64(output))
-        setLong(item,"$slot.${this.time}",time.time.time)
-
-        return true
-    }
 
     fun isFinish(item: ItemStack, slot: Int): ItemStack?{
 
@@ -86,6 +67,17 @@ open class MultiItem{
 //        }
 //
 //    }
+
+    open fun set(item: ItemStack, output: ItemStack, slot:Int):Boolean{
+
+        val time = Calendar.getInstance()
+        time.add(Calendar.HOUR_OF_DAY,3)
+
+        setString(item,"$slot.${output}", Man10KitchenGarden.plugin.itemToBase64(output))
+        setLong(item,"$slot.${time}",time.time.time)
+
+        return true
+    }
 
     //燃料を入れる
     fun setFuel(item: ItemStack){

@@ -16,6 +16,9 @@ class Man10KitchenGarden : JavaPlugin() {
     companion object{
 
         lateinit var plugin: Man10KitchenGarden
+        lateinit var planterRecipe : Recipe
+        lateinit var compressorRecipe : Recipe
+
         val titles = mutableListOf<String>()
 
     }
@@ -29,7 +32,8 @@ class Man10KitchenGarden : JavaPlugin() {
         if (args.isEmpty()){
 
             sender.sendMessage("§a/mkg planter ... ２種類のプランターを取得")
-            sender.sendMessage("§a/mkg recipe <name>  ... レシピを作るメニューを表示")
+            sender.sendMessage("§a/mkg compressor ... 圧縮機を取得")
+            sender.sendMessage("§a/mkg recipe <name> <planter/compressor>  ... レシピを作るメニューを表示")
 
             return true
         }
@@ -42,9 +46,13 @@ class Man10KitchenGarden : JavaPlugin() {
             return true
         }
 
+        if (args[0] == "compressor"){
+            sender.inventory.addItem(Compressor.compressorItem)
+        }
+
         if (args[0] == "recipe"){
 
-                Inventory.setRecipe(sender,args[1])
+                Inventory.setRecipe(sender,args[1],args[2])
 
             return true
         }
@@ -56,6 +64,8 @@ class Man10KitchenGarden : JavaPlugin() {
         // Plugin startup logic
 
         plugin = this
+        planterRecipe = Recipe("planter")
+        compressorRecipe = Recipe("compressor")
 
         server.pluginManager.registerEvents(MultiBlock,this)
         server.pluginManager.registerEvents(Inventory,this)
@@ -63,7 +73,8 @@ class Man10KitchenGarden : JavaPlugin() {
         saveDefaultConfig()
 //        planterID = config.getInt("planter")
 
-        Recipe.load()
+        planterRecipe.load()
+        compressorRecipe.load()
 
     }
 

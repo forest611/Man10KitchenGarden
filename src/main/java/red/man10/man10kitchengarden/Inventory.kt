@@ -12,6 +12,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.compressorRecipe
+import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planterRecipe
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.titles
 import red.man10.man10kitchengarden.Planter.getString
 import red.man10.man10kitchengarden.Planter.planterName
@@ -144,7 +146,7 @@ object Inventory:Listener{
         p.openInventory(inv)
     }
 
-    fun setRecipe(p:Player,name:String){
+    fun setRecipe(p:Player,name:String,item:String){
 
         val inv = Bukkit.createInventory(null,9,"SetRecipe")
 
@@ -165,6 +167,7 @@ object Inventory:Listener{
         meta3.setDisplayName("§a§l閉じてセーブ")
         panel3.itemMeta = meta3
         setString(panel3,"name",name)
+        setString(panel3,"item",item)
 
 
         inv.setItem(1,panel1)
@@ -197,9 +200,9 @@ object Inventory:Listener{
 
         val input = inv.getItem(e.slot+9)?:return
 
-        if (Recipe.getRecipe(input) ==null)return
+//        if (Recipe.getRecipe(input) ==null)return
 
-        Planter.set(item,input.clone(),e.slot+9)
+        Planter.setRecipe(item,input.clone(),e.slot+9)
 
         openPlanter(item,p,location)
 
@@ -222,9 +225,9 @@ object Inventory:Listener{
 
         val input = inv.getItem(e.slot+9)?:return
 
-        if (Recipe.getRecipe(input) ==null)return
+//        if (Recipe.getRecipe(input) ==null)return
 
-        Compressor.set(item,input.clone(),e.slot+9)
+        Compressor.setRecipe(item,input.clone(),e.slot+9)
 
         openCompressor(item,p,location)
     }
@@ -294,7 +297,10 @@ object Inventory:Listener{
 
             val name = getString(inv.getItem(4)!!,"name")!!
 
-            Recipe.setRecipe(name,input,output)
+            when(getString(inv.getItem(4)!!,"item")!!){
+                "planter" -> planterRecipe.setRecipe(name,input,output)
+                "compressor" -> compressorRecipe.setRecipe(name,input,output)
+            }
 
             e.player.sendMessage("§a§l設定完了！")
             return
