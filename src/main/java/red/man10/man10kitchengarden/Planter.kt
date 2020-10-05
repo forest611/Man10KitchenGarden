@@ -107,25 +107,25 @@ object Planter {
         return getLong(planter,"$slot.time")
     }
 
-    fun setFertilizer(planter: ItemStack,time:Int){
-
-        for (slot in slots){
-
-            //既に使ってたら使えない
-            if (getString(planter,"$slot.fertilizer")!=null)continue
-
-            val date = Date()
-            date.time = getLong(planter,"$slot.time")
-            if (time == 0)continue
-
-            val calender = Calendar.getInstance()
-            calender.time =date
-            calender.add(Calendar.MINUTE,30 )
-            setString(planter,"$slot.fertilizer","used")
-
-        }
-
-    }
+//    fun setFertilizer(planter: ItemStack,time:Int){
+//
+//        for (slot in slots){
+//
+//            //既に使ってたら使えない
+//            if (getString(planter,"$slot.fertilizer")!=null)continue
+//
+//            val date = Date()
+//            date.time = getLong(planter,"$slot.time")
+//            if (time == 0)continue
+//
+//            val calender = Calendar.getInstance()
+//            calender.time =date
+//            calender.add(Calendar.MINUTE,30 )
+//            setString(planter,"$slot.fertilizer","used")
+//
+//        }
+//
+//    }
 
     //水を入れる
     fun setWater(planter:ItemStack){
@@ -153,7 +153,7 @@ object Planter {
 
     fun getString(item: ItemStack,key: String):String?{
         if (!item.hasItemMeta())return null
-        return item.itemMeta.persistentDataContainer[NamespacedKey(plugin, key), STRING]?:return null
+        return item.itemMeta.persistentDataContainer[NamespacedKey(plugin, key), STRING]
     }
 
     fun setLong(item:ItemStack,key:String,value:Long){

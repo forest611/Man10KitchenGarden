@@ -152,7 +152,7 @@ object Inventory:Listener{
         }
 
         //アマスタのロケーションを読み込み
-        val pos = Planter.getString(e.inventory.getItem(0)!!,"location")!!.split(";")
+        val pos = getString(e.inventory.getItem(0)!!,"location")!!.split(";")
         val location = Location(p.world,pos[0].toDouble(),pos[1].toDouble(),pos[2].toDouble())
 
         val planterItem = MultiBlock.getMultiBlock(location)
