@@ -7,7 +7,7 @@ import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.plugin
 import java.util.concurrent.ConcurrentHashMap
 
 
-class Recipe {
+object Recipe {
 
     val recipes = ConcurrentHashMap<String,RecipeData>()
 

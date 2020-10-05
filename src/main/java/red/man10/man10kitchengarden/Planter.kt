@@ -3,14 +3,14 @@ package red.man10.man10kitchengarden
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataType.*
-import red.man10.man10kitchengarden.Inventory.Companion.slots
+import org.bukkit.persistence.PersistentDataType.LONG
+import org.bukkit.persistence.PersistentDataType.STRING
+import red.man10.man10kitchengarden.Inventory.slots
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planterID
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.plugin
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.recipe
 import java.util.*
 
-class Planter {
+object Planter {
 
     val planterItem : ItemStack = ItemStack(Material.IRON_NUGGET)
     val air = ItemStack(Material.AIR)
@@ -45,9 +45,6 @@ class Planter {
         meta.setDisplayName("§b改良型プランター")
         meta.lore = mutableListOf("§f回収することができる改良型プランター","§f肥料などが使えるようになってる")
 
-//        meta.addEnchant(Enchantment.LUCK,1,false)
-//        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
-
         planterItem.itemMeta = meta
 
         setString(planterItem,"name","planterEX")
@@ -67,13 +64,13 @@ class Planter {
 
     fun set(planter:ItemStack,input:ItemStack,slot:Int):Boolean{
 
-        val name = recipe.getRecipe(input)?:return false
+        val name = Recipe.getRecipe(input)?:return false
 
         val time = Calendar.getInstance()
         time.add(Calendar.HOUR_OF_DAY,3)
 //        time.add(Calendar.MINUTE,1)
 
-        val output = recipe.getRecipe(name)!!.output.clone()
+        val output = Recipe.getRecipe(name)!!.output.clone()
 
         output.amount = input.amount
 
@@ -135,7 +132,6 @@ class Planter {
 
         val time = Calendar.getInstance()
         time.add(Calendar.HOUR_OF_DAY,6)
-//        time.add(Calendar.MINUTE,5)
 
         setLong(planter,"water",time.time.time)
     }

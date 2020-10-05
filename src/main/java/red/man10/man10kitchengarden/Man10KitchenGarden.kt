@@ -1,11 +1,9 @@
 package red.man10.man10kitchengarden
 
-import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
 
 import org.bukkit.persistence.PersistentDataType.STRING
@@ -13,7 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.io.BukkitObjectInputStream
 import org.bukkit.util.io.BukkitObjectOutputStream
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
-import red.man10.realestate.RealEstateAPI
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
@@ -23,24 +20,8 @@ class Man10KitchenGarden : JavaPlugin() {
 
         lateinit var plugin: Man10KitchenGarden
 
-        lateinit var multiBlock: MultiBlock
-        lateinit var recipe : Recipe
-
-        lateinit var planter: Planter
-        lateinit var inventory: Inventory
-
         var planterID = 216
 
-        fun setData(item:ItemStack,key:String,value:String){
-            val meta = item.itemMeta
-            meta.persistentDataContainer.set(NamespacedKey(plugin, key), STRING,value)
-            item.itemMeta = meta
-        }
-
-        fun getData(item: ItemStack,key: String):String?{
-            if (!item.hasItemMeta())return null
-            return item.itemMeta.persistentDataContainer[NamespacedKey(plugin, key), STRING]?:return null
-        }
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
@@ -59,15 +40,15 @@ class Man10KitchenGarden : JavaPlugin() {
 
         if (args[0] == "planter"){
 
-            sender.inventory.addItem(planter.getPlanter())
-            sender.inventory.addItem(planter.getPlanterEx())
+            sender.inventory.addItem(Planter.getPlanter())
+            sender.inventory.addItem(Planter.getPlanterEx())
 
             return true
         }
 
         if (args[0] == "recipe"){
 
-                inventory.setRecipe(sender,args[1])
+                Inventory.setRecipe(sender,args[1])
 
             return true
         }
@@ -79,18 +60,14 @@ class Man10KitchenGarden : JavaPlugin() {
         // Plugin startup logic
 
         plugin = this
-        multiBlock = MultiBlock()
-        recipe = Recipe()
-        planter = Planter()
-        inventory = Inventory()
 
-        server.pluginManager.registerEvents(multiBlock,this)
-        server.pluginManager.registerEvents(inventory,this)
+        server.pluginManager.registerEvents(MultiBlock,this)
+        server.pluginManager.registerEvents(Inventory,this)
 
         saveDefaultConfig()
 //        planterID = config.getInt("planter")
 
-        recipe.load()
+        Recipe.load()
 
     }
 

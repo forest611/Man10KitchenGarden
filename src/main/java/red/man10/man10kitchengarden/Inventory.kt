@@ -3,44 +3,34 @@ package red.man10.man10kitchengarden
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataType
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.getData
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.multiBlock
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planter
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.plugin
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.recipe
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.setData
+import red.man10.realestate.menu.CustomInventory.getData
+import red.man10.realestate.menu.CustomInventory.setData
 import java.text.SimpleDateFormat
 
-class Inventory:Listener{
+object Inventory:Listener{
 
-    val waterSlot = 40
+    const val waterSlot = 40
     val barrier = ItemStack(Material.BARRIER)
+
+    val slots = listOf(10,13,16,37,43)
 
     init {
         val meta = barrier.itemMeta
         meta.setDisplayName("§c§l使用中")
         barrier.itemMeta = meta
     }
-
-    companion object{
-        val slots = listOf(10,13,16,37,43)
-    }
-
     fun openPlanter(planter:ItemStack,p:Player,l: Location,inventory: Inventory?){
 
-        val isEX = Man10KitchenGarden.planter.isEx(planter)
+        val isEX = Planter.isEx(planter)
 
-        val isWater = Man10KitchenGarden.planter.isWater(planter)
+        val isWater = Planter.isWater(planter)
 
         val inv = inventory
                 ?: if(isEX){
@@ -74,9 +64,9 @@ class Inventory:Listener{
             val panel2 = ItemStack(Material.LIME_STAINED_GLASS_PANE)
             val meta2 = panel2.itemMeta
 
-            if (Man10KitchenGarden.planter.isUsed(planter,slot)){
+            if (Planter.isUsed(planter,slot)){
 
-                val output = Man10KitchenGarden.planter.isFinish(planter,slot)
+                val output = Planter.isFinish(planter,slot)
 
                 if (output !=null){
                     inv.setItem(slot,output)
@@ -90,7 +80,7 @@ class Inventory:Listener{
 
                 inv.setItem(slot,barrier)
 
-                meta2.setDisplayName("§a§l完成予想時刻:${SimpleDateFormat("MM/dd kk:mm").format(Man10KitchenGarden.planter.getFinishTime(planter,slot))}")
+                meta2.setDisplayName("§a§l完成予想時刻:${SimpleDateFormat("MM/dd kk:mm").format(Planter.getFinishTime(planter,slot))}")
                 panel2.itemMeta = meta2
                 inv.setItem(slot-9,panel2)
                 continue
@@ -165,7 +155,7 @@ class Inventory:Listener{
         val pos = getData(e.inventory.getItem(0)!!,"location")!!.split(";")
         val location = Location(p.world,pos[0].toDouble(),pos[1].toDouble(),pos[2].toDouble())
 
-        val planterItem = multiBlock.getMultiBlock(location)
+        val planterItem = MultiBlock.getMultiBlock(location)
 
         val inv = e.inventory
 
@@ -179,7 +169,7 @@ class Inventory:Listener{
         if (e.slot == (waterSlot-9)){
             val slot40 = inv.getItem(waterSlot)?:return
             if (slot40.type == Material.WATER_BUCKET){
-                planter.setWater(planterItem)
+                Planter.setWater(planterItem)
                 inv.removeItem(slot40)
                 openPlanter(planterItem,p,location,inv)
             }
@@ -190,9 +180,9 @@ class Inventory:Listener{
 
         val input = inv.getItem(e.slot+9)?:return
 
-        if (recipe.getRecipe(input) ==null)return
+        if (Recipe.getRecipe(input) ==null)return
 
-        planter.set(planterItem,input.clone(),e.slot+9)
+        Planter.set(planterItem,input.clone(),e.slot+9)
 
         openPlanter(planterItem,p,location,inv)
 
@@ -212,7 +202,7 @@ class Inventory:Listener{
 
             val name = getData(inv.getItem(4)!!,"name")!!
 
-            recipe.setRecipe(name,input,output)
+            Recipe.setRecipe(name,input,output)
 
             e.player.sendMessage("§a§l設定完了！")
             return

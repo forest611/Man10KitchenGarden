@@ -6,22 +6,17 @@ import org.bukkit.Sound
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.getData
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.inventory
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planter
 import red.man10.realestate.RealEstateAPI
-import red.man10.realestate.region.User
 import red.man10.realestate.region.User.Permission.ALL
 import red.man10.realestate.region.User.Permission.INVENTORY
 
-class MultiBlock :Listener{
+object MultiBlock :Listener{
 
 
     fun getCube(centerBlock:Location):List<Location>{
@@ -142,7 +137,7 @@ class MultiBlock :Listener{
     }
 
     fun isMultiBlock(item:ItemStack):Boolean{
-        if (getData(item,"name") !=null)return true
+        if (Planter.getString(item,"name") !=null)return true
         return false
     }
 
@@ -170,7 +165,7 @@ class MultiBlock :Listener{
 
                     if (item!=null){
 
-                        inventory.openPlanter(item,p,clickedLocation,null)
+                        Inventory.openPlanter(item,p,clickedLocation,null)
 
                         e.isCancelled = true
                         return
@@ -220,8 +215,8 @@ class MultiBlock :Listener{
 
                     val item = breakMultiBlock(location)?:return
 
-                    if (planter.isEx(item)){
-                        p.inventory.addItem(planter.getPlanterEx())
+                    if (Planter.isEx(item)){
+                        p.inventory.addItem(Planter.getPlanterEx())
                     }
 
                     e.isCancelled = true
