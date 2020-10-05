@@ -65,7 +65,7 @@ class Man10KitchenGarden : JavaPlugin() {
 
         plugin = this
         planterRecipe = Recipe("planter")
-        compressorRecipe = Recipe("compressor")
+        compressorRecipe = Recipe(Compressor.compressorID)
 
         server.pluginManager.registerEvents(MultiBlock,this)
         server.pluginManager.registerEvents(Inventory,this)

@@ -275,7 +275,7 @@ object Inventory:Listener{
             return
         }
 
-        if (name == "compressor"){
+        if (name == Compressor.compressorID){
             clickCompressor(e,item,p,location)
             return
         }
@@ -299,7 +299,7 @@ object Inventory:Listener{
 
             when(getString(inv.getItem(4)!!,"item")!!){
                 "planter" -> planterRecipe.setRecipe(name,input,output)
-                "compressor" -> compressorRecipe.setRecipe(name,input,output)
+                Compressor.compressorID -> compressorRecipe.setRecipe(name,input,output)
             }
 
             e.player.sendMessage("§a§l設定完了！")

@@ -168,7 +168,7 @@ object MultiBlock :Listener{
                         if (name == "planter" || name == "planterEX"){
                             Inventory.openPlanter(item,p,clickedLocation)
 
-                        }else if (name == "compressor"){
+                        }else if (name == Compressor.compressorID){
                             Inventory.openCompressor(item,p,clickedLocation)
                         }
 
@@ -228,7 +228,7 @@ object MultiBlock :Listener{
                             p.inventory.addItem(Planter.getPlanterEx())
                         }
 
-                    }else if (name == "compressor"){
+                    }else if (name == Compressor.compressorID){
                         p.inventory.addItem(Compressor.compressorItem)
                     }
 

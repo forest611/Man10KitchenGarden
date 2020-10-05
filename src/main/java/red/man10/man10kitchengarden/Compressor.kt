@@ -8,6 +8,7 @@ object Compressor : MultiItem(){
 
     private const val id = 214
     const val compressorName = "§6圧縮機"
+    const val compressorID = "compressor"
     val compressorItem = ItemStack(Material.IRON_NUGGET)
 
     init {
@@ -19,7 +20,7 @@ object Compressor : MultiItem(){
         meta.setCustomModelData(id)
         compressorItem.itemMeta = meta
 
-        setString(compressorItem,"name","compressor")
+        setString(compressorItem,"name", compressorID)
 
         titles.add(compressorName)
     }
