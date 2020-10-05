@@ -10,8 +10,8 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import red.man10.realestate.menu.CustomInventory.getData
-import red.man10.realestate.menu.CustomInventory.setData
+import red.man10.man10kitchengarden.Planter.getString
+import red.man10.man10kitchengarden.Planter.setString
 import java.text.SimpleDateFormat
 
 object Inventory:Listener{
@@ -49,7 +49,7 @@ object Inventory:Listener{
         }
 
         val data = ItemStack(Material.GRAY_STAINED_GLASS_PANE)
-        setData(data,"location","${l.x};${l.y};${l.z}")
+        setString(data,"location","${l.x};${l.y};${l.z}")
 
         inv.setItem(0,data)
 
@@ -117,7 +117,7 @@ object Inventory:Listener{
         val meta3 = panel3.itemMeta
         meta3.setDisplayName("§a§l閉じてセーブ")
         panel3.itemMeta = meta3
-        setData(panel3,"name",name)
+        setString(panel3,"name",name)
 
 
         inv.setItem(1,panel1)
@@ -152,7 +152,7 @@ object Inventory:Listener{
         }
 
         //アマスタのロケーションを読み込み
-        val pos = getData(e.inventory.getItem(0)!!,"location")!!.split(";")
+        val pos = Planter.getString(e.inventory.getItem(0)!!,"location")!!.split(";")
         val location = Location(p.world,pos[0].toDouble(),pos[1].toDouble(),pos[2].toDouble())
 
         val planterItem = MultiBlock.getMultiBlock(location)
@@ -200,7 +200,7 @@ object Inventory:Listener{
             val input = inv.getItem(0)?:return
             val output = inv.getItem(8)?:return
 
-            val name = getData(inv.getItem(4)!!,"name")!!
+            val name = getString(inv.getItem(4)!!,"name")!!
 
             Recipe.setRecipe(name,input,output)
 
