@@ -8,10 +8,14 @@ import java.util.*
 
 open class MultiItem{
 
-    val air = ItemStack(Material.AIR)
+    private val air = ItemStack(Material.AIR)
+    private val output = "output"
+    private val time = "time"
+    private val fertilizer = "fertilizer"
+    private val fuel = "fuel"
 
     fun isUsed(planter: ItemStack, slot: Int):Boolean{
-        if (getString(planter,"$slot.output") == null)return false
+        if (getString(planter,"$slot.$output") == null)return false
         return true
     }
 
@@ -29,37 +33,35 @@ open class MultiItem{
 
         output.amount = input.amount
 
-        setString(planter,"$slot.output", Man10KitchenGarden.plugin.itemToBase64(output))
-        setLong(planter,"$slot.time",time.time.time)
+        setString(planter,"$slot.${this.output}", Man10KitchenGarden.plugin.itemToBase64(output))
+        setLong(planter,"$slot.${this.time}",time.time.time)
 
         return true
     }
 
     fun isFinish(planter: ItemStack, slot: Int): ItemStack?{
 
-        val time = getLong(planter,"$slot.time")
+        if (hasFuel(planter))return null
+        if (getFinishTime(planter, slot)>Date().time){
+            delete(planter,"$slot.$output")
+            delete(planter,"$slot.$time")
+            delete(planter,"$slot.$fertilizer")
 
-        if (time> Date().time)return null
-        if (time>getLong(planter,"water")){
-            delete(planter,"$slot.output")
-            delete(planter,"$slot.time")
-            delete(planter,"$slot.fertilizer")
-
-            return Planter.air
+            return air
         }
 
-        val output = Man10KitchenGarden.plugin.itemFromBase64(getString(planter,"$slot.output")!!)?:return null
+        val output = Man10KitchenGarden.plugin.itemFromBase64(getString(planter,"$slot.$output")!!)?:return null
 
-        delete(planter,"$slot.output")
-        delete(planter,"$slot.time")
-        delete(planter,"$slot.fertilizer")
+        delete(planter,"$slot.${this.output}")
+        delete(planter,"$slot.$time")
+        delete(planter,"$slot.$fertilizer")
 
         return output
 
     }
 
     fun getFinishTime(planter: ItemStack, slot: Int): Long {
-        return getLong(planter,"$slot.time")
+        return getLong(planter,"$slot.$time")
     }
 
 //    fun setFertilizer(planter: ItemStack,time:Int){
@@ -88,12 +90,12 @@ open class MultiItem{
         val time = Calendar.getInstance()
         time.add(Calendar.HOUR_OF_DAY,6)
 
-        setLong(planter,"water",time.time.time)
+        setLong(planter,fuel,time.time.time)
     }
 
     //水分があるか
     fun hasFuel(planter: ItemStack):Boolean{
-        val time = getLong(planter,"water")
+        val time = getLong(planter,fuel)
         if (time< Date().time)return false
         return true
     }
