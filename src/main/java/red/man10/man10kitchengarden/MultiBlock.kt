@@ -13,8 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import red.man10.realestate.RealEstateAPI
-import red.man10.realestate.region.User.Permission.ALL
-import red.man10.realestate.region.User.Permission.INVENTORY
+import red.man10.realestate.region.User.Permission.*
 
 object MultiBlock :Listener{
 
@@ -165,7 +164,13 @@ object MultiBlock :Listener{
 
                     if (item!=null){
 
-                        Inventory.openPlanter(item,p,clickedLocation,null)
+                        val name = Planter.getString(item, "name")
+                        if (name == "planter" || name == "planterEX"){
+                            Inventory.openPlanter(item,p,clickedLocation)
+
+                        }else if (name == "compressor"){
+                            Inventory.openCompressor(item,p,clickedLocation)
+                        }
 
                         e.isCancelled = true
                         return
@@ -182,7 +187,7 @@ object MultiBlock :Listener{
 
                         val location = clicked.location.clone()
 
-                        if (!RealEstateAPI.hasPermission(p,location, ALL))return
+                        if (!RealEstateAPI.hasPermission(p,location, BLOCK))return
 
                         location.y +=2.0
                         location.yaw = p.location.yaw
@@ -204,7 +209,7 @@ object MultiBlock :Listener{
 
                     val location = e.clickedBlock!!.location
 
-                    if (!RealEstateAPI.hasPermission(p,location, ALL))return
+                    if (!RealEstateAPI.hasPermission(p,location, BLOCK))return
 
                     val wrench = p.inventory.itemInMainHand
 
@@ -215,9 +220,18 @@ object MultiBlock :Listener{
 
                     val item = breakMultiBlock(location)?:return
 
-                    if (Planter.isEx(item)){
-                        p.inventory.addItem(Planter.getPlanterEx())
+                    val name = Planter.getString(item, "name")
+
+                    if (name == "planter" || name == "planterEX"){
+
+                        if (Planter.isEx(item)){
+                            p.inventory.addItem(Planter.getPlanterEx())
+                        }
+
+                    }else if (name == "compressor"){
+                        p.inventory.addItem(Compressor.compressorItem)
                     }
+
 
                     e.isCancelled = true
                 }
