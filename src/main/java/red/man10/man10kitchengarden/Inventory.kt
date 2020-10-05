@@ -30,7 +30,7 @@ object Inventory:Listener{
 
         val isEX = Planter.isEx(planter)
 
-        val isWater = Planter.isWater(planter)
+        val isWater = Planter.hasFuel(planter)
 
         val inv = inventory
                 ?: if(isEX){
@@ -169,7 +169,7 @@ object Inventory:Listener{
         if (e.slot == (waterSlot-9)){
             val slot40 = inv.getItem(waterSlot)?:return
             if (slot40.type == Material.WATER_BUCKET){
-                Planter.setWater(planterItem)
+                Planter.setFuel(planterItem)
                 inv.removeItem(slot40)
                 openPlanter(planterItem,p,location,inv)
             }

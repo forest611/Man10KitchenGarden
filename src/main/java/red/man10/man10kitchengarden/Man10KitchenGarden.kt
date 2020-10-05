@@ -20,8 +20,6 @@ class Man10KitchenGarden : JavaPlugin() {
 
         lateinit var plugin: Man10KitchenGarden
 
-        var planterID = 216
-
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
