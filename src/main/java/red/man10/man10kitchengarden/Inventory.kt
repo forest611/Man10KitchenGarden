@@ -207,9 +207,10 @@ object Inventory:Listener{
 
 //        if (Recipe.getRecipe(input) ==null)return
 
-        Planter.setRecipe(item,input.clone(),e.slot+9)
+        if (Planter.setRecipe(item,input.clone(),e.slot+9)){
+            openPlanter(item,p,location)
+        }
 
-        openPlanter(item,p,location)
 
     }
 
@@ -218,7 +219,7 @@ object Inventory:Listener{
 
         if (e.slot == (fuelSlot-9)){
             val slot40 = inv.getItem(fuelSlot)?:return
-            if (slot40.type == Material.COAL){
+            if (slot40.type == Material.LAVA_BUCKET){
                 Compressor.setFuel(item)
                 inv.removeItem(slot40)
                 openCompressor(item,p,location)
@@ -232,9 +233,9 @@ object Inventory:Listener{
 
 //        if (Recipe.getRecipe(input) ==null)return
 
-        Compressor.setRecipe(item,input.clone(),e.slot+9)
-
-        openCompressor(item,p,location)
+        if (Compressor.setRecipe(item,input.clone(),e.slot+9)){
+            openCompressor(item,p,location)
+        }
     }
 
     @EventHandler
