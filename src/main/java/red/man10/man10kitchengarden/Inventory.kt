@@ -205,6 +205,12 @@ object Inventory:Listener{
 
         val input = inv.getItem(e.slot+9)?:return
 
+        if (input.amount >1){
+            p.sendMessage("§c§l一つのスロットに入れられる種は、一個までです！")
+//            openPlanter(item,p,location)
+            return
+        }
+
 //        if (Recipe.getRecipe(input) ==null)return
 
         if (Planter.setRecipe(item,input.clone(),e.slot+9)){
