@@ -145,6 +145,8 @@ object MultiBlock :Listener{
 
         val p = e.player
 
+        if (!Man10KitchenGarden.pluginEnable)return
+
         if (p.world.name != "builder")return
 
         when(e.action){

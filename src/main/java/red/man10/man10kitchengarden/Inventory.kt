@@ -196,7 +196,7 @@ object Inventory:Listener{
             if (slot40.type == Material.WATER_BUCKET){
                 Planter.setFuel(item)
                 inv.removeItem(slot40)
-                openPlanter(item,p,location)
+//                openPlanter(item,p,location)
             }
             return
         }

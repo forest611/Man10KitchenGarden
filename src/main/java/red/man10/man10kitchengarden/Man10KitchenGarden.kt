@@ -21,6 +21,8 @@ class Man10KitchenGarden : JavaPlugin() {
 
         val titles = mutableListOf<String>()
 
+        var pluginEnable = true
+
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
@@ -54,6 +56,16 @@ class Man10KitchenGarden : JavaPlugin() {
 
                 Inventory.setRecipe(sender,args[1],args[2])
 
+            return true
+        }
+
+        if (args[0] == "off"){
+            pluginEnable = false
+            return true
+        }
+
+        if (args[0] == "on"){
+            pluginEnable = true
             return true
         }
 
