@@ -214,7 +214,7 @@ object Inventory:Listener{
 //        if (Recipe.getRecipe(input) ==null)return
 
         if (Planter.setRecipe(item,input.clone(),e.slot+9)){
-            openPlanter(item,p,location,null)
+            openPlanter(item,p,location,inv)
         }
 
 
