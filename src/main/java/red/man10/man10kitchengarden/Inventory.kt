@@ -52,13 +52,13 @@ object Inventory:Listener{
         return inv
     }
 
-    fun openPlanter(planter:ItemStack,p:Player,l: Location){
+    fun openPlanter(planter:ItemStack,p:Player,l: Location,inventory:Inventory?){
 //
 //        Planter.status(planter,p)
 
         val isEX = Planter.isEx(planter)
 
-        val inv = createBaseMenu(if (isEX) Planter.planterEXName else planterName,p,l)
+        val inv = inventory?:createBaseMenu(if (isEX) Planter.planterEXName else planterName,p,l)
 
         val waterPanel = ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
         val wMeta = waterPanel.itemMeta
@@ -196,7 +196,7 @@ object Inventory:Listener{
             if (slot40.type == Material.WATER_BUCKET){
                 Planter.setFuel(item)
                 inv.removeItem(slot40)
-//                openPlanter(item,p,location)
+                openPlanter(item,p,location,inv)
             }
             return
         }
@@ -214,7 +214,7 @@ object Inventory:Listener{
 //        if (Recipe.getRecipe(input) ==null)return
 
         if (Planter.setRecipe(item,input.clone(),e.slot+9)){
-            openPlanter(item,p,location)
+            openPlanter(item,p,location,null)
         }
 
 

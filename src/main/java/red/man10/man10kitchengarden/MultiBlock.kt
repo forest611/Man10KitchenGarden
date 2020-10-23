@@ -168,7 +168,7 @@ object MultiBlock :Listener{
 
                         val name = Planter.getString(item, "name")
                         if (name == "planter" || name == "planterEX"){
-                            Inventory.openPlanter(item,p,clickedLocation)
+                            Inventory.openPlanter(item,p,clickedLocation,null)
 
                         }else if (name == Compressor.compressorID){
                             Inventory.openCompressor(item,p,clickedLocation)
