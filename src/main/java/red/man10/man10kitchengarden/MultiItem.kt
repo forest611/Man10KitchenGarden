@@ -27,13 +27,14 @@ open class MultiItem{
 
     fun isFinish(item: ItemStack, slot: Int): ItemStack?{
 
-        if (hasFuel(item))return null
+        if (!hasFuel(item))return null
         if (getFinishTime(item, slot)>Date().time){
-            delete(item,"$slot.${this.output}")
-            delete(item,"$slot.${this.time}")
-            delete(item,"$slot.$fertilizer")
-
-            return air
+//            delete(item,"$slot.${this.output}")
+//            delete(item,"$slot.${this.time}")
+//            delete(item,"$slot.$fertilizer")
+//
+//            return air
+            return null
         }
 
         val output = Man10KitchenGarden.plugin.itemFromBase64(getString(item,"$slot.$output")!!)?:return null
@@ -73,7 +74,8 @@ open class MultiItem{
     open fun set(item: ItemStack, output: ItemStack, slot:Int):Boolean{
 
         val time = Calendar.getInstance()
-        time.add(Calendar.HOUR_OF_DAY,3)
+//        time.add(Calendar.HOUR_OF_DAY,3)
+        time.add(Calendar.MINUTE,1)
 
         setString(item,"$slot.${this.output}", Man10KitchenGarden.plugin.itemToBase64(output))
         setLong(item,"$slot.${this.time}",time.time.time)
