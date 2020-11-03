@@ -96,6 +96,7 @@ class Man10KitchenGarden : JavaPlugin() {
 
         planterRecipe.load()
         compressorRecipe.load()
+        EXPMakingMachineRecipe.load()
 
     }
 

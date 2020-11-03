@@ -1,14 +1,13 @@
 package red.man10.man10kitchengarden
 
 import org.bukkit.Material
-import org.bukkit.entity.Item
 import org.bukkit.inventory.ItemStack
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.titles
 
 object EXPMakingMachine : MultiItem(){
 
     private const val id = 214
-    const val expmakingmachinename = "§6経験値作製機"
+    const val expmakingmachinename = "§a§l経験値作製機"
     const val expmakingmachineid = "expmakingmachine"
     val expmakingmachineitem = ItemStack(Material.IRON_NUGGET)
 
@@ -16,12 +15,12 @@ object EXPMakingMachine : MultiItem(){
         val meta = expmakingmachineitem.itemMeta
 
         meta.setDisplayName(expmakingmachinename)
-        meta.lore = mutableListOf("§経験値を作成するときに使う","§fレンチで回収できる")
+        meta.lore = mutableListOf("§a経験値を作成するときに使う","§aレンチで回収できる")
 
         meta.setCustomModelData(id)
         expmakingmachineitem.itemMeta = meta
 
-        setString(expmakingmachineitem,"name", expmakingmachineid)
+        setString(expmakingmachineitem,"name", "expmakingmachine")
 
         titles.add(expmakingmachinename)
     }

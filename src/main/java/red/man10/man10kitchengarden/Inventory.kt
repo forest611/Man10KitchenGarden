@@ -161,9 +161,9 @@ object Inventory:Listener{
         val inv = inventory?:createBaseMenu(EXPMakingMachine.expmakingmachinename,p,l)
 
         val waterPanel = ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
-        val wMeta = waterPanel.itemMeta
-        wMeta.setDisplayName("§bエメラルド:${if (Planter.hasFuel(expmakingmachine))"§aあり" else "§cなし" }")
-        waterPanel.itemMeta = wMeta
+        val eMeta = waterPanel.itemMeta
+        eMeta.setDisplayName("§bエメラルド:${if (Planter.hasFuel(expmakingmachine))"§aあり" else "§cなし" }")
+        waterPanel.itemMeta = eMeta
 
         inv.setItem(fuelSlot-9,waterPanel)
 
@@ -296,15 +296,14 @@ object Inventory:Listener{
     }
 
     fun clickEXPMakingMachine(e:InventoryClickEvent,item: ItemStack,p:Player,location: Location){
-
         val inv = e.inventory
 
         if (e.slot == (fuelSlot-9)){
             val slot40 = inv.getItem(fuelSlot)?:return
             if (slot40.type == Material.EMERALD){
-                Planter.setFuel(item)
+                EXPMakingMachine.setFuel(item)
                 inv.removeItem(slot40)
-                openPlanter(item,p,location,inv)
+                openEXPMakingMachine(item,p,location,inv)
             }
             return
         }
@@ -312,20 +311,16 @@ object Inventory:Listener{
         if (!slots.contains(e.slot+9)) { return }
 
         val input = inv.getItem(e.slot+9)?:return
-
-        if (input.amount >10){
-            p.sendMessage("§c§l一つのスロットに入れられる種は、10個までです！")
+        if (input.amount >12){
+            p.sendMessage("§c§l一つのスロットに入れられる瓶は、十二個までです！")
 //            openPlanter(item,p,location)
             return
         }
-
 //        if (Recipe.getRecipe(input) ==null)return
 
-        if (Planter.setRecipe(item,input.clone(),e.slot+9)){
-            openPlanter(item,p,location,inv)
+        if (EXPMakingMachine.setRecipe(item,input.clone(),e.slot+9)){
+            openEXPMakingMachine(item,p,location,inv)
         }
-
-
     }
 
     @EventHandler

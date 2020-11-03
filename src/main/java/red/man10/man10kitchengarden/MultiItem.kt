@@ -1,16 +1,12 @@
 package red.man10.man10kitchengarden
 
-import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
 open class MultiItem{
 
-    private val air = ItemStack(Material.AIR)
     val output = "output"
     val time = "time"
     private val fertilizer = "fertilizer"
