@@ -1,3 +1,5 @@
+@file:Suppress("DUPLICATE_LABEL_IN_WHEN")
+
 package red.man10.man10kitchengarden
 
 import org.bukkit.Bukkit
@@ -12,6 +14,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.EXPMakingMachineRecipe
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.compressorRecipe
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planterRecipe
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.titles
@@ -151,6 +154,54 @@ object Inventory:Listener{
         p.openInventory(inv)
     }
 
+    fun openEXPMakingMachine(expmakingmachine:ItemStack,p:Player,l: Location,inventory:Inventory?){
+//
+//        Planter.status(planter,p)
+
+        val inv = inventory?:createBaseMenu(EXPMakingMachine.expmakingmachinename,p,l)
+
+        val waterPanel = ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
+        val wMeta = waterPanel.itemMeta
+        wMeta.setDisplayName("§bエメラルド:${if (Planter.hasFuel(expmakingmachine))"§aあり" else "§cなし" }")
+        waterPanel.itemMeta = wMeta
+
+        inv.setItem(fuelSlot-9,waterPanel)
+
+        for (slot in slots){
+            val panel2 = ItemStack(Material.LIME_STAINED_GLASS_PANE)
+            val meta2 = panel2.itemMeta
+
+            if (Planter.isUsed(expmakingmachine,slot)){
+
+                val output = Planter.isFinish(expmakingmachine,slot)
+
+                if (output !=null){
+                    inv.setItem(slot,output)
+
+                    meta2.setDisplayName("§a§l設置する")
+                    panel2.itemMeta = meta2
+
+                    inv.setItem(slot-9,panel2)
+                    continue
+                }
+
+                inv.setItem(slot,barrier)
+
+                meta2.setDisplayName("§a§l完成予想時刻:${SimpleDateFormat("MM/dd kk:mm").format(Planter.getFinishTime(expmakingmachine,slot))}")
+                panel2.itemMeta = meta2
+                inv.setItem(slot-9,panel2)
+                continue
+            }
+            meta2.setDisplayName("§a§l設置する")
+            panel2.itemMeta = meta2
+
+            inv.setItem(slot-9,panel2)
+
+        }
+
+        p.openInventory(inv)
+    }
+
     fun setRecipe(p:Player,name:String,item:String){
 
         val inv = Bukkit.createInventory(null,9,"SetRecipe")
@@ -244,6 +295,39 @@ object Inventory:Listener{
         }
     }
 
+    fun clickEXPMakingMachine(e:InventoryClickEvent,item: ItemStack,p:Player,location: Location){
+
+        val inv = e.inventory
+
+        if (e.slot == (fuelSlot-9)){
+            val slot40 = inv.getItem(fuelSlot)?:return
+            if (slot40.type == Material.EMERALD){
+                Planter.setFuel(item)
+                inv.removeItem(slot40)
+                openPlanter(item,p,location,inv)
+            }
+            return
+        }
+
+        if (!slots.contains(e.slot+9)) { return }
+
+        val input = inv.getItem(e.slot+9)?:return
+
+        if (input.amount >10){
+            p.sendMessage("§c§l一つのスロットに入れられる種は、10個までです！")
+//            openPlanter(item,p,location)
+            return
+        }
+
+//        if (Recipe.getRecipe(input) ==null)return
+
+        if (Planter.setRecipe(item,input.clone(),e.slot+9)){
+            openPlanter(item,p,location,inv)
+        }
+
+
+    }
+
     @EventHandler
     fun click(e:InventoryClickEvent){
 
@@ -291,6 +375,10 @@ object Inventory:Listener{
             clickCompressor(e,item,p,location)
             return
         }
+        if (name == EXPMakingMachine.expmakingmachineid){
+            clickEXPMakingMachine(e,item,p,location)
+            return
+        }
 
 
         return
@@ -312,6 +400,7 @@ object Inventory:Listener{
             when(getString(inv.getItem(4)!!,"item")!!){
                 "planter" -> planterRecipe.setRecipe(name,input,output)
                 Compressor.compressorID -> compressorRecipe.setRecipe(name,input,output)
+                EXPMakingMachine.expmakingmachineid -> EXPMakingMachineRecipe.setRecipe(name,input,output)
             }
 
             e.player.sendMessage("§a§l設定完了！")

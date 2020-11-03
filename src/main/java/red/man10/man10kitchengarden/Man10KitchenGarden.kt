@@ -10,6 +10,7 @@ import org.bukkit.util.io.BukkitObjectOutputStream
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import kotlin.jvm.Throws
 
 class Man10KitchenGarden : JavaPlugin() {
 
@@ -18,6 +19,7 @@ class Man10KitchenGarden : JavaPlugin() {
         lateinit var plugin: Man10KitchenGarden
         lateinit var planterRecipe : Recipe
         lateinit var compressorRecipe : Recipe
+        lateinit var EXPMakingMachineRecipe : Recipe
 
         val titles = mutableListOf<String>()
 
@@ -35,7 +37,8 @@ class Man10KitchenGarden : JavaPlugin() {
 
             sender.sendMessage("§a/mkg planter ... ２種類のプランターを取得")
             sender.sendMessage("§a/mkg compressor ... 圧縮機を取得")
-            sender.sendMessage("§a/mkg recipe <name> <planter/compressor>  ... レシピを作るメニューを表示")
+            sender.sendMessage("§a/mkg expmakingmachine ... 経験値作製機を取得")
+            sender.sendMessage("§a/mkg recipe <name> <planter/compressor/expmakingmachine>  ... レシピを作るメニューを表示")
 
             return true
         }
@@ -51,6 +54,11 @@ class Man10KitchenGarden : JavaPlugin() {
         if (args[0] == "compressor"){
             sender.inventory.addItem(Compressor.compressorItem)
         }
+
+        if (args[0] == "expmakingmachine"){
+            sender.inventory.addItem(EXPMakingMachine.expmakingmachineitem)
+        }
+
 
         if (args[0] == "recipe"){
 
@@ -78,6 +86,7 @@ class Man10KitchenGarden : JavaPlugin() {
         plugin = this
         planterRecipe = Recipe("planter")
         compressorRecipe = Recipe(Compressor.compressorID)
+        EXPMakingMachineRecipe = Recipe(EXPMakingMachine.expmakingmachineid)
 
         server.pluginManager.registerEvents(MultiBlock,this)
         server.pluginManager.registerEvents(Inventory,this)

@@ -232,6 +232,9 @@ object MultiBlock :Listener{
 
                     }else if (name == Compressor.compressorID){
                         p.inventory.addItem(Compressor.compressorItem)
+
+                    } else if (name == EXPMakingMachine.expmakingmachinename){
+                        p.inventory.addItem(Compressor.compressorItem)
                     }
 
 
