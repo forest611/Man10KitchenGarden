@@ -175,7 +175,7 @@ object MultiBlock :Listener{
                             Inventory.openCompressor(item,p,clickedLocation)
 
                         }else if (name == EXPMakingMachine.expmakingmachineid){
-                            Inventory.openEXPMakingMachine(item,p,clickedLocation,null)
+                            Inventory.openEXPMakingMachine(item,p,clickedLocation)
                         }
 
                         e.isCancelled = true

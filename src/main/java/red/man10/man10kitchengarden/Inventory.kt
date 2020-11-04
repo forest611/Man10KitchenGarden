@@ -154,26 +154,26 @@ object Inventory:Listener{
         p.openInventory(inv)
     }
 
-    fun openEXPMakingMachine(expmakingmachine:ItemStack,p:Player,l: Location,inventory:Inventory?){
+    fun openEXPMakingMachine(expmakingmachine:ItemStack,p:Player,l: Location){
 //
 //        Planter.status(planter,p)
 
-        val inv = inventory?:createBaseMenu(EXPMakingMachine.expmakingmachinename,p,l)
+        val inv = createBaseMenu(EXPMakingMachine.expmakingmachinename,p,l)
 
-        val waterPanel = ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE)
-        val eMeta = waterPanel.itemMeta
-        eMeta.setDisplayName("§bエメラルド:${if (Planter.hasFuel(expmakingmachine))"§aあり" else "§cなし" }")
-        waterPanel.itemMeta = eMeta
+        val EmeraldPanel = ItemStack(Material.LIME_STAINED_GLASS_PANE)
+        val emeMeta = EmeraldPanel.itemMeta
+        emeMeta.setDisplayName("§bエメラルド:${if (EXPMakingMachine.hasFuel(expmakingmachine))"§aあり" else "§cなし" }")
+        EmeraldPanel.itemMeta = emeMeta
 
-        inv.setItem(fuelSlot-9,waterPanel)
+        inv.setItem(fuelSlot-9,EmeraldPanel)
 
         for (slot in slots){
-            val panel2 = ItemStack(Material.LIME_STAINED_GLASS_PANE)
+            val panel2 = ItemStack(Material.GREEN_STAINED_GLASS_PANE)
             val meta2 = panel2.itemMeta
 
-            if (Planter.isUsed(expmakingmachine,slot)){
+            if (EXPMakingMachine.isUsed(expmakingmachine,slot)){
 
-                val output = Planter.isFinish(expmakingmachine,slot)
+                val output = EXPMakingMachine.isFinish(expmakingmachine,slot)
 
                 if (output !=null){
                     inv.setItem(slot,output)
@@ -187,7 +187,7 @@ object Inventory:Listener{
 
                 inv.setItem(slot,barrier)
 
-                meta2.setDisplayName("§a§l完成予想時刻:${SimpleDateFormat("MM/dd kk:mm").format(Planter.getFinishTime(expmakingmachine,slot))}")
+                meta2.setDisplayName("§a§l完成予想時刻:${SimpleDateFormat("MM/dd kk:mm").format(EXPMakingMachine.getFinishTime(expmakingmachine,slot))}")
                 panel2.itemMeta = meta2
                 inv.setItem(slot-9,panel2)
                 continue
@@ -296,14 +296,15 @@ object Inventory:Listener{
     }
 
     fun clickEXPMakingMachine(e:InventoryClickEvent,item: ItemStack,p:Player,location: Location){
+
         val inv = e.inventory
 
         if (e.slot == (fuelSlot-9)){
             val slot40 = inv.getItem(fuelSlot)?:return
             if (slot40.type == Material.EMERALD){
-                EXPMakingMachine.setFuel(item)
+                Planter.setFuel(item)
                 inv.removeItem(slot40)
-                openEXPMakingMachine(item,p,location,inv)
+                openPlanter(item,p,location,inv)
             }
             return
         }
@@ -311,16 +312,20 @@ object Inventory:Listener{
         if (!slots.contains(e.slot+9)) { return }
 
         val input = inv.getItem(e.slot+9)?:return
+
         if (input.amount >12){
-            p.sendMessage("§c§l一つのスロットに入れられる瓶は、十二個までです！")
+            p.sendMessage("§c§l一つのスロットに入れられる種は、十二個までです！")
 //            openPlanter(item,p,location)
             return
         }
+
 //        if (Recipe.getRecipe(input) ==null)return
 
         if (EXPMakingMachine.setRecipe(item,input.clone(),e.slot+9)){
-            openEXPMakingMachine(item,p,location,inv)
+            openPlanter(item,p,location,inv)
         }
+
+
     }
 
     @EventHandler
