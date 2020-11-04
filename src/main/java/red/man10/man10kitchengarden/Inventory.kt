@@ -302,9 +302,9 @@ object Inventory:Listener{
         if (e.slot == (fuelSlot-9)){
             val slot40 = inv.getItem(fuelSlot)?:return
             if (slot40.type == Material.EMERALD){
-                Planter.setFuel(item)
+                EXPMakingMachine.setFuel(item)
                 inv.removeItem(slot40)
-                openPlanter(item,p,location,inv)
+            openEXPMakingMachine(item,p,location)
             }
             return
         }
@@ -322,7 +322,7 @@ object Inventory:Listener{
 //        if (Recipe.getRecipe(input) ==null)return
 
         if (EXPMakingMachine.setRecipe(item,input.clone(),e.slot+9)){
-            openPlanter(item,p,location,inv)
+            openEXPMakingMachine(item,p,location)
         }
 
 
