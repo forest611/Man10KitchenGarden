@@ -171,7 +171,11 @@ object MultiBlock :Listener{
                             Inventory.openPlanter(item,p,clickedLocation,null)
 
                         }else if (name == Compressor.compressorID){
+
                             Inventory.openCompressor(item,p,clickedLocation)
+
+                        }else if (name == EXPMakingMachine.expmakingmachineid){
+                            Inventory.openEXPMakingMachine(item,p,clickedLocation)
                         }
 
                         e.isCancelled = true
@@ -232,6 +236,9 @@ object MultiBlock :Listener{
 
                     }else if (name == Compressor.compressorID){
                         p.inventory.addItem(Compressor.compressorItem)
+
+                    } else if (name == EXPMakingMachine.expmakingmachineid){
+                        p.inventory.addItem(EXPMakingMachine.expmakingmachineitem)
                     }
 
 
