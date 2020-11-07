@@ -70,8 +70,8 @@ open class MultiItem{
     open fun set(item: ItemStack, output: ItemStack, slot:Int):Boolean{
 
         val time = Calendar.getInstance()
-//        time.add(Calendar.HOUR_OF_DAY,3)
-        time.add(Calendar.MINUTE,1)
+        time.add(Calendar.HOUR_OF_DAY,3)
+//        time.add(Calendar.MINUTE,1)
 
         setString(item,"$slot.${this.output}", Man10KitchenGarden.plugin.itemToBase64(output))
         setLong(item,"$slot.${this.time}",time.time.time)
