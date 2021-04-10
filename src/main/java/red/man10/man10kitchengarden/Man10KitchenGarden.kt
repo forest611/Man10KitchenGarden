@@ -51,13 +51,6 @@ class Man10KitchenGarden : JavaPlugin() {
             return true
         }
 
-        if (args[0] == "compressor"){
-            sender.inventory.addItem(Compressor.compressorItem)
-        }
-
-        if (args[0] == "expmakingmachine"){
-            sender.inventory.addItem(EXPMakingMachine.expmakingmachineitem)
-        }
 
 
         if (args[0] == "recipe"){
@@ -85,8 +78,6 @@ class Man10KitchenGarden : JavaPlugin() {
 
         plugin = this
         planterRecipe = Recipe("planter")
-        compressorRecipe = Recipe(Compressor.compressorID)
-        EXPMakingMachineRecipe = Recipe(EXPMakingMachine.expmakingmachineid)
 
         server.pluginManager.registerEvents(MultiBlock,this)
         server.pluginManager.registerEvents(Inventory,this)

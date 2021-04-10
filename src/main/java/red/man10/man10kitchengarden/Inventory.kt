@@ -105,102 +105,6 @@ object Inventory:Listener{
         p.openInventory(inv)
     }
 
-    fun openCompressor(compressor:ItemStack,p:Player,l:Location){
-//
-//        Compressor.status(compressor,p)
-//
-        val inv = createBaseMenu(Compressor.compressorName,p,l)
-
-        val fuelPanel = ItemStack(Material.ORANGE_STAINED_GLASS_PANE)
-        val fuelMeta = fuelPanel.itemMeta
-        fuelMeta.setDisplayName("§6燃料:${if (Compressor.hasFuel(compressor))"§aあり" else "§cなし" }")
-        fuelPanel.itemMeta = fuelMeta
-
-        inv.setItem(fuelSlot-9,fuelPanel)
-
-
-        for (slot in slots){
-            val panel2 = ItemStack(Material.LIME_STAINED_GLASS_PANE)
-            val meta2 = panel2.itemMeta
-
-            if (Compressor.isUsed(compressor,slot)){
-
-                val output = Compressor.isFinish(compressor,slot)
-
-                if (output !=null){
-                    inv.setItem(slot,output)
-
-                    meta2.setDisplayName("§e投入")
-                    panel2.itemMeta = meta2
-
-                    inv.setItem(slot-9,panel2)
-                    continue
-                }
-
-                inv.setItem(slot,barrier)
-
-                meta2.setDisplayName("§a§l完成予想時刻:${SimpleDateFormat("MM/dd kk:mm").format(Compressor.getFinishTime(compressor,slot))}")
-                panel2.itemMeta = meta2
-                inv.setItem(slot-9,panel2)
-                continue
-            }
-            meta2.setDisplayName("§e投入")
-            panel2.itemMeta = meta2
-
-            inv.setItem(slot-9,panel2)
-
-        }
-
-        p.openInventory(inv)
-    }
-
-    fun openEXPMakingMachine(expmakingmachine:ItemStack,p:Player,l: Location){
-//
-//        Planter.status(planter,p)
-
-        val inv = createBaseMenu(EXPMakingMachine.expmakingmachinename,p,l)
-
-        val EmeraldPanel = ItemStack(Material.LIME_STAINED_GLASS_PANE)
-        val emeMeta = EmeraldPanel.itemMeta
-        emeMeta.setDisplayName("§bエメラルド:${if (EXPMakingMachine.hasFuel(expmakingmachine))"§aあり" else "§cなし" }")
-        EmeraldPanel.itemMeta = emeMeta
-
-        inv.setItem(fuelSlot-9,EmeraldPanel)
-
-        for (slot in slots){
-            val panel2 = ItemStack(Material.GREEN_STAINED_GLASS_PANE)
-            val meta2 = panel2.itemMeta
-
-            if (EXPMakingMachine.isUsed(expmakingmachine,slot)){
-
-                val output = EXPMakingMachine.isFinish(expmakingmachine,slot)
-
-                if (output !=null){
-                    inv.setItem(slot,output)
-
-                    meta2.setDisplayName("§a§l設置する")
-                    panel2.itemMeta = meta2
-
-                    inv.setItem(slot-9,panel2)
-                    continue
-                }
-
-                inv.setItem(slot,barrier)
-
-                meta2.setDisplayName("§a§l完成予想時刻:${SimpleDateFormat("MM/dd kk:mm").format(EXPMakingMachine.getFinishTime(expmakingmachine,slot))}")
-                panel2.itemMeta = meta2
-                inv.setItem(slot-9,panel2)
-                continue
-            }
-            meta2.setDisplayName("§a§l設置する")
-            panel2.itemMeta = meta2
-
-            inv.setItem(slot-9,panel2)
-
-        }
-
-        p.openInventory(inv)
-    }
 
     fun setRecipe(p:Player,name:String,item:String){
 
@@ -271,63 +175,6 @@ object Inventory:Listener{
 
     }
 
-    fun clickCompressor(e:InventoryClickEvent,item: ItemStack,p:Player,location: Location){
-        val inv = e.inventory
-
-        if (e.slot == (fuelSlot-9)){
-            val slot40 = inv.getItem(fuelSlot)?:return
-            if (slot40.type == Material.LAVA_BUCKET){
-                Compressor.setFuel(item)
-                inv.removeItem(slot40)
-                openCompressor(item,p,location)
-            }
-            return
-        }
-
-        if (!slots.contains(e.slot+9)) { return }
-
-        val input = inv.getItem(e.slot+9)?:return
-
-//        if (Recipe.getRecipe(input) ==null)return
-
-        if (Compressor.setRecipe(item,input.clone(),e.slot+9)){
-            openCompressor(item,p,location)
-        }
-    }
-
-    fun clickEXPMakingMachine(e:InventoryClickEvent,item: ItemStack,p:Player,location: Location){
-
-        val inv = e.inventory
-
-        if (e.slot == (fuelSlot-9)){
-            val slot40 = inv.getItem(fuelSlot)?:return
-            if (slot40.type == Material.EMERALD){
-                Planter.setFuel(item)
-                inv.removeItem(slot40)
-                openPlanter(item,p,location,inv)
-            }
-            return
-        }
-
-        if (!slots.contains(e.slot+9)) { return }
-
-        val input = inv.getItem(e.slot+9)?:return
-
-        if (input.amount >12){
-            p.sendMessage("§c§l一つのスロットに入れられる種は、十二個までです！")
-//            openPlanter(item,p,location)
-            return
-        }
-
-//        if (Recipe.getRecipe(input) ==null)return
-
-        if (EXPMakingMachine.setRecipe(item,input.clone(),e.slot+9)){
-            openPlanter(item,p,location,inv)
-        }
-
-
-    }
-
     @EventHandler
     fun click(e:InventoryClickEvent){
 
@@ -371,15 +218,6 @@ object Inventory:Listener{
             return
         }
 
-        if (name == Compressor.compressorID){
-            clickCompressor(e,item,p,location)
-            return
-        }
-        if (name == EXPMakingMachine.expmakingmachineid){
-            clickEXPMakingMachine(e,item,p,location)
-            return
-        }
-
 
         return
 
@@ -399,8 +237,6 @@ object Inventory:Listener{
 
             when(getString(inv.getItem(4)!!,"item")!!){
                 "planter" -> planterRecipe.setRecipe(name,input,output)
-                Compressor.compressorID -> compressorRecipe.setRecipe(name,input,output)
-                EXPMakingMachine.expmakingmachineid -> EXPMakingMachineRecipe.setRecipe(name,input,output)
             }
 
             e.player.sendMessage("§a§l設定完了！")

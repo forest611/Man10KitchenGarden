@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import red.man10.realestate.RealEstateAPI
+import red.man10.realestate.RealEstateAPI.hasPermission
 import red.man10.realestate.region.User.Permission.*
 
 object MultiBlock :Listener{
@@ -160,7 +161,7 @@ object MultiBlock :Listener{
 
                     val clickedLocation = e.clickedBlock!!.location.clone()
 
-                    if (!RealEstateAPI.hasPermission(p,clickedLocation, INVENTORY))return
+                    if (!hasPermission(p,clickedLocation, INVENTORY))return
 
                     val item = getMultiBlock(clickedLocation)
 
@@ -170,12 +171,6 @@ object MultiBlock :Listener{
                         if (name == "planter" || name == "planterEX"){
                             Inventory.openPlanter(item,p,clickedLocation,null)
 
-                        }else if (name == Compressor.compressorID){
-
-                            Inventory.openCompressor(item,p,clickedLocation)
-
-                        }else if (name == EXPMakingMachine.expmakingmachineid){
-                            Inventory.openEXPMakingMachine(item,p,clickedLocation)
                         }
 
                         e.isCancelled = true
@@ -193,7 +188,7 @@ object MultiBlock :Listener{
 
                         val location = clicked.location.clone()
 
-                        if (!RealEstateAPI.hasPermission(p,location, BLOCK))return
+                        if (!hasPermission(p,location, BLOCK))return
 
                         location.y +=2.0
                         location.yaw = p.location.yaw
@@ -215,14 +210,9 @@ object MultiBlock :Listener{
 
                     val location = e.clickedBlock!!.location
 
-                    if (!RealEstateAPI.hasPermission(p,location, BLOCK))return
+                    if (!hasPermission(p,location, BLOCK))return
 
                     val wrench = p.inventory.itemInMainHand
-
-                    if (!wrench.hasItemMeta()||wrench.itemMeta.displayName != "§lレンチ" ){
-                        p.sendMessage("§c§lレンチを持ってください！")
-                        return
-                    }
 
                     val item = breakMultiBlock(location)?:return
 
@@ -230,15 +220,15 @@ object MultiBlock :Listener{
 
                     if (name == "planter" || name == "planterEX"){
 
+                        if (!wrench.hasItemMeta()||wrench.itemMeta.displayName != "§lレンチ" ){
+                            p.sendMessage("§c§lレンチを持ってください！")
+                            return
+                        }
+
                         if (Planter.isEx(item)){
                             p.inventory.addItem(Planter.getPlanterEx())
                         }
 
-                    }else if (name == Compressor.compressorID){
-                        p.inventory.addItem(Compressor.compressorItem)
-
-                    } else if (name == EXPMakingMachine.expmakingmachineid){
-                        p.inventory.addItem(EXPMakingMachine.expmakingmachineitem)
                     }
 
 
