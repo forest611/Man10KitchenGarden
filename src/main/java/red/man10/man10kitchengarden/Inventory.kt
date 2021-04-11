@@ -14,8 +14,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.EXPMakingMachineRecipe
-import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.compressorRecipe
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.planterRecipe
 import red.man10.man10kitchengarden.Man10KitchenGarden.Companion.titles
 import red.man10.man10kitchengarden.Planter.getString
@@ -25,10 +23,10 @@ import java.text.SimpleDateFormat
 
 object Inventory:Listener{
 
-    const val fuelSlot = 40
-    val barrier = ItemStack(Material.BARRIER)
+    private const val fuelSlot = 40
+    private val barrier = ItemStack(Material.BARRIER)
 
-    val slots = listOf(10,13,16,37,43)
+    private val slots = listOf(10,13,16,37,43)
 
     init {
         val meta = barrier.itemMeta
@@ -244,7 +242,7 @@ object Inventory:Listener{
         }
     }
 
-    fun setLocation(loc:Location,item:ItemStack){
+    private fun setLocation(loc:Location, item:ItemStack){
 
         val meta = item.itemMeta
         meta.persistentDataContainer.set(NamespacedKey(Man10KitchenGarden.plugin,"world"), PersistentDataType.STRING,loc.world.name)
@@ -256,7 +254,7 @@ object Inventory:Listener{
 
     }
 
-    fun getLocation(item:ItemStack):Location{
+    private fun getLocation(item:ItemStack):Location{
 
         val meta = item.itemMeta
         val world = meta.persistentDataContainer[NamespacedKey(Man10KitchenGarden.plugin,"world"), PersistentDataType.STRING]!!

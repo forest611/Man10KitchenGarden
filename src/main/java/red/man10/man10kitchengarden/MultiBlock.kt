@@ -19,7 +19,7 @@ import red.man10.realestate.region.User.Permission.*
 object MultiBlock :Listener{
 
 
-    fun getCube(centerBlock:Location):List<Location>{
+    private fun getCube(centerBlock:Location):List<Location>{
 
         val list = mutableListOf<Location>()
 
@@ -41,7 +41,7 @@ object MultiBlock :Listener{
 
     }
 
-    fun getArmorStand(location: Location):ArmorStand?{
+    private fun getArmorStand(location: Location):ArmorStand?{
 
         val fixedLoc = location.clone()
         fixedLoc.x += 0.5
@@ -59,7 +59,7 @@ object MultiBlock :Listener{
 
     }
 
-    fun setMultiBlock(center:Location, item:ItemStack):Boolean{
+    private fun setMultiBlock(center:Location, item:ItemStack):Boolean{
 
         val cube = getCube(center)
 
@@ -115,7 +115,7 @@ object MultiBlock :Listener{
 
     }
 
-    fun breakMultiBlock(location:Location):ItemStack?{
+    private fun breakMultiBlock(location:Location):ItemStack?{
 
         val stand = getArmorStand(location)?:return null
 
@@ -136,7 +136,7 @@ object MultiBlock :Listener{
         return item
     }
 
-    fun isMultiBlock(item:ItemStack):Boolean{
+    private fun isMultiBlock(item:ItemStack):Boolean{
         if (Planter.getString(item,"name") !=null)return true
         return false
     }

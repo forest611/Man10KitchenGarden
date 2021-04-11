@@ -18,8 +18,6 @@ class Man10KitchenGarden : JavaPlugin() {
 
         lateinit var plugin: Man10KitchenGarden
         lateinit var planterRecipe : Recipe
-        lateinit var compressorRecipe : Recipe
-        lateinit var EXPMakingMachineRecipe : Recipe
 
         val titles = mutableListOf<String>()
 
@@ -86,8 +84,6 @@ class Man10KitchenGarden : JavaPlugin() {
 //        planterID = config.getInt("planter")
 
         planterRecipe.load()
-        compressorRecipe.load()
-        EXPMakingMachineRecipe.load()
 
     }
 
