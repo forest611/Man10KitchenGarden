@@ -7,14 +7,12 @@ import org.bukkit.block.BlockFace
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import red.man10.realestate.RealEstateAPI
-import red.man10.realestate.RealEstateAPI.hasPermission
-import red.man10.realestate.region.User.Permission.*
 
 object MultiBlock :Listener{
 
@@ -141,7 +139,7 @@ object MultiBlock :Listener{
         return false
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     fun interactEvent(e:PlayerInteractEvent){
 
         val p = e.player
@@ -161,7 +159,7 @@ object MultiBlock :Listener{
 
                     val clickedLocation = e.clickedBlock!!.location.clone()
 
-                    if (!hasPermission(p,clickedLocation, INVENTORY))return
+                    if (e.isCancelled)return
 
                     val item = getMultiBlock(clickedLocation)
 
@@ -188,7 +186,7 @@ object MultiBlock :Listener{
 
                         val location = clicked.location.clone()
 
-                        if (!hasPermission(p,location, BLOCK))return
+                        if (e.isCancelled)return
 
                         location.y +=2.0
                         location.yaw = p.location.yaw
@@ -210,7 +208,7 @@ object MultiBlock :Listener{
 
                     val location = e.clickedBlock!!.location
 
-                    if (!hasPermission(p,location, BLOCK))return
+                    if (e.isCancelled)return
 
                     val wrench = p.inventory.itemInMainHand
 
